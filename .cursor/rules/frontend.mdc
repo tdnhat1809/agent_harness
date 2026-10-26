@@ -1,0 +1,12 @@
+---
+description: Frontend craft, React/Next.js performance, and aesthetic standards
+globs: ["**/*.tsx", "**/*.jsx", "**/*.vue", "**/*.svelte", "**/*.css", "**/*.html"]
+alwaysApply: false
+---
+
+# Frontend Craft & Impeccable Design Standards
+
+- **Server Components First**: React Server Components by default; isolate `'use client'` to leaf interactive nodes.
+- **Eliminate Waterfalls**: Use `Promise.all` and React Suspense for parallel data fetching.
+- **Aesthetic Excellence**: Use curated HSL color palettes, subtle luminous borders, clean typography. Never use browser-default raw inputs or unstyled buttons.
+- **Responsive & Accessible**: Mobile-first breakpoints (375px, 768px, 1024px, 1440px), high text contrast, visible focus rings, ARIA labels.

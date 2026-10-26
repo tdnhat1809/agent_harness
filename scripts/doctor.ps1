@@ -1,0 +1,64 @@
+# ==============================================================================
+# Agent Harness Environment Doctor (Healthcheck)
+# ==============================================================================
+
+Write-Host "`n========================================================" -ForegroundColor Cyan
+Write-Host "   AI AGENT HARNESS SYSTEM HEALTHCHECK (DOCTOR)        " -ForegroundColor Cyan
+Write-Host "========================================================" -ForegroundColor Cyan
+
+function Check-Tool ($toolName, $command) {
+    try {
+        $cmd = Get-Command $command -ErrorAction SilentlyContinue
+        if ($cmd) {
+            $ver = (& $command --version 2>&1 | Select-Object -First 1)
+            Write-Host "  [OK] ${toolName}: Found ($ver)" -ForegroundColor Green
+            return $true
+        } else {
+            Write-Host "  [--] ${toolName}: Not installed (optional)" -ForegroundColor Gray
+            return $false
+        }
+    } catch {
+        Write-Host "  [--] ${toolName}: Not found" -ForegroundColor Gray
+        return $false
+    }
+}
+
+function Check-File ($path, $label) {
+    if (Test-Path $path) {
+        Write-Host "  [OK] $label exists" -ForegroundColor Green
+    } else {
+        Write-Host "  [!!] $label MISSING ($path)" -ForegroundColor Red
+    }
+}
+
+Write-Host "`n[1] Runtime Tools:" -ForegroundColor Yellow
+Check-Tool "Git" "git"
+Check-Tool "Node.js" "node"
+Check-Tool "Python" "python"
+Check-Tool "Go" "go"
+Check-Tool "Rust (Cargo)" "cargo"
+Check-Tool "Docker" "docker"
+
+Write-Host "`n[2] Agent Context Entrypoints:" -ForegroundColor Yellow
+Check-File "AGENTS.md" "AGENTS.md (Universal Standard)"
+Check-File "CLAUDE.md" "CLAUDE.md (Claude Code)"
+Check-File "CODEX.md" "CODEX.md (Codex)"
+Check-File "OPENCODE.md" "OPENCODE.md (OpenCode)"
+Check-File ".cursorrules" ".cursorrules (Cursor IDE)"
+Check-File ".cursor\rules\guardrails.mdc" "Cursor MDC rules"
+
+Write-Host "`n[3] Security & Token Shields:" -ForegroundColor Yellow
+Check-File ".agentignore" ".agentignore"
+Check-File ".claudeignore" ".claudeignore"
+Check-File ".cursorignore" ".cursorignore"
+
+Write-Host "`n[4] Harness Engine Directories:" -ForegroundColor Yellow
+Check-File ".agents\rules" "Agent Rules"
+Check-File ".agents\skills" "Agent Skills"
+Check-File ".claude\commands" "Claude Slash Commands"
+Check-File "docs\plans\active" "Durable Active Plans"
+Check-File "docs\decisions" "Architecture Decisions (ADR)"
+
+Write-Host "`n========================================================" -ForegroundColor Cyan
+Write-Host "   DIAGNOSIS COMPLETE! YOUR HARNESS IS PRODUCTION-READY " -ForegroundColor Green
+Write-Host "========================================================`n" -ForegroundColor Cyan

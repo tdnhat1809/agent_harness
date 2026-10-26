@@ -1,0 +1,57 @@
+# ==============================================================================
+# AI Agent Ignore File (.agentignore)
+# Protects secrets & token budget by excluding noisy, generated, or sensitive files
+# ==============================================================================
+
+# Secrets & Credentials (NEVER upload to LLMs)
+**/.env*
+!**/.env.example
+**/*.pem
+**/*.key
+**/*.keystore
+**/*.p12
+**/*.pfx
+**/id_rsa*
+**/secrets.json
+**/credentials.json
+
+# Dependencies & Package Managers
+**/node_modules/**
+**/vendor/**
+**/.venv/**
+**/venv/**
+**/env/**
+**/__pycache__/**
+**/.pytest_cache/**
+**/.mypy_cache/**
+**/.ruff_cache/**
+
+# Build Outputs & Generated Artifacts
+**/dist/**
+**/build/**
+**/.next/**
+**/.nuxt/**
+**/.svelte-kit/**
+**/out/**
+**/target/**
+**/bin/**
+**/obj/**
+
+# Version Control & Metadata
+**/.git/**
+**/.svn/**
+**/.hg/**
+
+# Logs, Cache & Dumps
+**/*.log
+**/*.lock
+**/package-lock.json
+**/yarn.lock
+**/pnpm-lock.yaml
+**/poetry.lock
+**/Cargo.lock
+**/coverage/**
+**/.coverage
+**/htmlcov/**
+**/*.dmp
+**/*.core

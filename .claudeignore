@@ -1,0 +1,36 @@
+# ==============================================================================
+# Claude Code Ignore File (.claudeignore)
+# Protects secrets & token budget for Claude CLI
+# ==============================================================================
+
+# Secrets & Credentials
+**/.env*
+!**/.env.example
+**/*.pem
+**/*.key
+**/*.keystore
+**/id_rsa*
+**/secrets.json
+
+# Dependencies
+**/node_modules/**
+**/vendor/**
+**/.venv/**
+**/__pycache__/**
+
+# Build Outputs
+**/dist/**
+**/build/**
+**/.next/**
+**/target/**
+**/bin/**
+**/obj/**
+
+# Logs & Locks
+**/*.log
+**/*.lock
+**/package-lock.json
+**/pnpm-lock.yaml
+**/poetry.lock
+**/Cargo.lock
+**/coverage/**

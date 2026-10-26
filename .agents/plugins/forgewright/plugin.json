@@ -1,0 +1,7 @@
+{
+  "name": "forgewright",
+  "version": "1.0.0",
+  "description": "Forgewright Adaptive AI Engineering Orchestrator across Define, Build, Harden, Ship, and Sustain lifecycle phases.",
+  "skills": ["skills/forgewright"],
+  "rules": ["rules/guardrails.md"]
+}

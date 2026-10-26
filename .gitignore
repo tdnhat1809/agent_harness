@@ -1,0 +1,15 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node / Scratch
+node_modules/
+*.log
+scratch/
+tmp/
+
+# Keep empty structure
+!docs/plans/active/.gitkeep
+!docs/plans/completed/.gitkeep
+!docs/runbooks/.gitkeep

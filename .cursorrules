@@ -1,0 +1,10 @@
+# Cursor Rules & Agent Harness Directives
+
+Read `AGENTS.md` and `docs/WORKFLOW.md` as primary authority.
+
+## Non-Negotiable Rules:
+1. Empirical Metrics Only: Always cite exit codes, test outputs, and compiler logs.
+2. Strict TDD: Write failing test (RED) before writing code (GREEN).
+3. Gates Enforcement: Follow `.agents/rules/ecc-harness-gate.md`.
+4. Headless Browsers Only: Never launch headed browser windows (`headless: true`).
+5. Durable Plans: Multi-step work belongs in `docs/plans/active/`.

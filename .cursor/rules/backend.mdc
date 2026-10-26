@@ -1,0 +1,12 @@
+---
+description: Backend services, microservices, and database safety
+globs: ["**/*.py", "**/*.go", "**/*.rs", "services/**", "src/api/**", "src/**"]
+alwaysApply: false
+---
+
+# Backend Engineering & Invariant Rules
+
+- **Type Safety**: Strictly annotate all inputs and outputs; forbid untyped `any` or raw dictionaries.
+- **Error Wrapping**: Wrap errors with context (e.g. `fmt.Errorf("...: %w", err)` in Go, typed exceptions in Python/Rust).
+- **Concurrency**: Propagate cancellation contexts (`context.Context`, `asyncio.TaskGroup`); prevent dangling routines.
+- **Database Safety**: Enforce zero-downtime migration patterns (Expand-Contract); use `CREATE INDEX CONCURRENTLY` in Postgres; eliminate N+1 query patterns in ORMs.

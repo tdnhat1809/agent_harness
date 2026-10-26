@@ -1,0 +1,14 @@
+---
+description: Mandatory 6-Gate Task Execution Lifecycle
+alwaysApply: true
+---
+
+# ECC Task Execution Gate
+
+Follow the 6 lifecycle gates for all non-trivial changes:
+1. **Spec & Invariant Analysis**: Identify repository authority; stop if requirements are ambiguous.
+2. **Implementation Plan**: Break work into 2-5 minute atomic tasks in `docs/plans/active/`.
+3. **Automated Test / TDD**: Write a failing test before writing implementation logic.
+4. **Clean Implementation**: Minimal, strictly typed, modular code.
+5. **Invariant & Security Check**: Validate auth, tenant isolation, input sanitation.
+6. **Executable Proof**: Verify clean build (exit code 0) and live runtime verification.

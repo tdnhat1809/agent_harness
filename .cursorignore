@@ -1,0 +1,27 @@
+# ==============================================================================
+# Cursor Ignore File (.cursorignore)
+# Excludes noisy and sensitive files from Cursor AI indexing
+# ==============================================================================
+
+# Secrets
+**/.env*
+!**/.env.example
+**/*.pem
+**/*.key
+**/secrets.json
+
+# Dependencies & Builds
+**/node_modules/**
+**/vendor/**
+**/.venv/**
+**/dist/**
+**/build/**
+**/.next/**
+**/target/**
+
+# Logs & Locks
+**/*.log
+**/*.lock
+**/package-lock.json
+**/Cargo.lock
+**/coverage/**

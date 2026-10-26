@@ -1,0 +1,53 @@
+{
+  "version": "1.0.0",
+  "hooks": {
+    "pre_task": [
+      {
+        "name": "ecc-harness-gate-check",
+        "description": "Verifies that intent is clear, scope is bounded, and implementation plan is formulated before modifying code",
+        "action": "enforce_rule",
+        "rule": "ecc-harness-gate.md"
+      },
+      {
+        "name": "clarify-before-mutate-check",
+        "description": "Forces the agent to stop and ask if core specifications or authority are missing",
+        "action": "enforce_rule",
+        "rule": "clarify-before-mutate.md"
+      }
+    ],
+    "post_edit": [
+      {
+        "name": "anti-regression-ui-gate",
+        "description": "Ensures existing styles, layout, and components outside blast radius are strictly preserved",
+        "action": "enforce_rule",
+        "rule": "anti-regression-ui-preservation.md"
+      },
+      {
+        "name": "ui-ux-craft-gate",
+        "description": "Ensures UI components adhere to impeccable design standards and Vercel React best practices",
+        "action": "enforce_rule",
+        "rule": "ui-ux-craft.md"
+      }
+    ],
+    "pre_complete": [
+      {
+        "name": "verification-proof-gate",
+        "description": "Requires executable test and build evidence before task completion",
+        "action": "enforce_skill",
+        "skill": "verification-before-completion"
+      },
+      {
+        "name": "empirical-evidence-guard",
+        "description": "Bans hollow/tautological tests and demands real tool-driven security audit output",
+        "action": "enforce_skill",
+        "skill": "empirical-evidence-guard"
+      },
+      {
+        "name": "context-hygiene-gate",
+        "description": "Prompts agent to suggest opening a fresh session if milestone is completed and context is heavy",
+        "action": "enforce_rule",
+        "rule": "context-hygiene-handoff.md"
+      }
+    ]
+  }
+}

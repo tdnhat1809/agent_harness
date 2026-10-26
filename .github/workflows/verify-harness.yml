@@ -1,0 +1,59 @@
+name: Verify Harness Framework
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-installer-linux:
+    name: Test Installer on Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Create Mock Target Repo
+        run: |
+          mkdir -p /tmp/mock-repo
+          cd /tmp/mock-repo
+          git init
+          echo "# Existing Project Rules" > AGENTS.md
+
+      - name: Run Bash Installer
+        run: |
+          chmod +x ./install.sh
+          ./install.sh /tmp/mock-repo
+
+      - name: Verify Installed Artifacts
+        run: |
+          test -f /tmp/mock-repo/AGENTS.md
+          test -f /tmp/mock-repo/CLAUDE.md
+          test -f /tmp/mock-repo/CODEX.md
+          test -f /tmp/mock-repo/OPENCODE.md
+          test -f /tmp/mock-repo/.cursorrules
+          test -f /tmp/mock-repo/.claudeignore
+          test -d /tmp/mock-repo/.agents/skills
+          test -d /tmp/mock-repo/.claude/commands
+          grep -q "HARNESS:BEGIN" /tmp/mock-repo/AGENTS.md
+          echo "All verification checks passed!"
+
+  test-installer-windows:
+    name: Test Installer on Windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run PowerShell Installer into Mock Repo
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path "$env:RUNNER_TEMP\mock-repo" -Force
+          Set-Content -Path "$env:RUNNER_TEMP\mock-repo\AGENTS.md" -Value "# Existing Repo"
+          .\install.ps1 -Target "$env:RUNNER_TEMP\mock-repo"
+          
+          if (-not (Test-Path "$env:RUNNER_TEMP\mock-repo\CLAUDE.md")) { throw "CLAUDE.md missing" }
+          if (-not (Test-Path "$env:RUNNER_TEMP\mock-repo\.claude\commands\plan.md")) { throw "Claude commands missing" }
+          if (-not (Test-Path "$env:RUNNER_TEMP\mock-repo\.agents\skills\python-engineering")) { throw "Python skill missing" }
+          Write-Host "Windows verification passed!"

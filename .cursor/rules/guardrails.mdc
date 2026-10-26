@@ -1,0 +1,12 @@
+---
+description: 4 Core Engineering Guardrails (Empirical Metrics, TDD, Subagents, Convergence)
+alwaysApply: true
+---
+
+# Core Engineering Guardrails
+
+1. **Empirical Metrics Only**: Base every diagnosis, claim, and completion report on observable runtime evidence (logs, exit code 0, test pass counts, latency, memory).
+2. **Strict TDD (Red-Green-Refactor)**: Write an automated test demonstrating failure (RED) before touching implementation code (GREEN), then refactor.
+3. **Subagent Context Separation**: Divide complex tasks and cross-verify API contracts and microservice interfaces independently.
+4. **Continuous Convergence Loop**: Iterate through Diagnose -> Test RED -> Implement GREEN -> Verify Proof until 100% of objectives are verified.
+5. **Headless Browsers Always**: Never launch headed browser windows (`headless: true`).

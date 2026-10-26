@@ -1,0 +1,10 @@
+# Windsurf Global Rules & Agent Harness
+
+Read `AGENTS.md` and `docs/WORKFLOW.md`.
+Enforce 4 Guardrails:
+1. Empirical data (metrics, logs, exit codes) for all claims.
+2. Strict TDD (Red-Green-Refactor).
+3. Context cross-check across service boundaries.
+4. Continuous loop until 100% verified.
+Browser automation must be headless.
+Follow `.agents/rules/ecc-harness-gate.md`.

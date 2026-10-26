@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "_comment": "Active core MCP servers. For 86+ additional verified servers (Database, DevOps, Cloud, AI Research, Pentest), see .agents/mcp_catalog.json",
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"],
+      "env": {
+        "PUPPETEER_HEADLESS": "true"
+      },
+      "description": "Chrome DevTools MCP for headless browser inspection, DOM evaluation, and UI automated verification"
+    },
+    "serena": {
+      "command": "npx",
+      "args": ["-y", "@serena-ai/mcp-server"],
+      "description": "Serena Code Exploration MCP for semantic code graph navigation, symbol indexing, and cross-reference analysis"
+    },
+    "google-stitch": {
+      "command": "npx",
+      "args": ["-y", "@google/stitch-mcp"],
+      "description": "Google Stitch MCP for UI/UX component synthesis, design token alignment, and visual craft verification"
+    }
+  }
+}
