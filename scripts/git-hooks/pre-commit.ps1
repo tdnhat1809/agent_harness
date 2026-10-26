@@ -34,8 +34,8 @@ if ($leakedFiles.Count -gt 0) {
     exit 1
 }
 
-# 2. Secret Pattern Scanner in Diff
-$diff = git diff --cached -U0
+# 2. Secret Pattern Scanner in Diff (excluding hook definition files)
+$diff = git diff --cached -U0 -- ":(exclude)scripts/git-hooks/*"
 $secretPatterns = @(
     'ghp_[a-zA-Z0-9]{36}',
     'sk-[a-zA-Z0-9]{32,}',

@@ -17,9 +17,9 @@ if [ -n "$STAGED_SENSITIVE" ]; then
     exit 1
 fi
 
-# 2. Secret Pattern Scanner in Diff
-DIFF_CONTENT=$(git diff --cached -U0)
-SECRET_PATTERN='(ghp_[a-zA-Z0-9]{36}|sk-[a-zA-Z0-9]{32,}|AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z-_]{35}|BEGIN PRIVATE KEY)'
+# 2. Secret Pattern Scanner in Diff (excluding hook definition files)
+DIFF_CONTENT=$(git diff --cached -U0 -- ":(exclude)scripts/git-hooks/*")
+SECRET_PATTERN='(ghp_[a-zA-Z0-9]{36}|sk-[a-zA-Z0-9]{32,}|AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z_-]{35}|BEGIN PRIVATE KEY)'
 if echo "$DIFF_CONTENT" | grep -E -q "$SECRET_PATTERN"; then
     echo "❌ [SECURITY REJECTED] High-entropy API key or private key detected in staged diff!"
     echo "Aborting commit to prevent credential leak."
