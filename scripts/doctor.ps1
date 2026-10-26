@@ -58,6 +58,7 @@ Check-File ".agents\skills" "Agent Skills"
 Check-File ".claude\commands" "Claude Slash Commands"
 Check-File "docs\plans\active" "Durable Active Plans"
 Check-File "docs\decisions" "Architecture Decisions (ADR)"
+Check-File "docs\memory" "Persistent Memory (Failure Journal)"
 
 Write-Host "`n[5] Mechanical Git Hooks:" -ForegroundColor Yellow
 Check-File ".git\hooks\pre-commit" "Git Hook: pre-commit (TDD & Secret Shield)"

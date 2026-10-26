@@ -7,53 +7,110 @@ on:
     branches: [main]
 
 jobs:
-  test-installer-linux:
-    name: Test Installer on Linux
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Create Mock Target Repo
-        run: |
-          mkdir -p /tmp/mock-repo
-          cd /tmp/mock-repo
-          git init
-          echo "# Existing Project Rules" > AGENTS.md
-
-      - name: Run Bash Installer
-        run: |
-          chmod +x ./install.sh
-          ./install.sh /tmp/mock-repo
-
-      - name: Verify Installed Artifacts
-        run: |
-          test -f /tmp/mock-repo/AGENTS.md
-          test -f /tmp/mock-repo/CLAUDE.md
-          test -f /tmp/mock-repo/CODEX.md
-          test -f /tmp/mock-repo/OPENCODE.md
-          test -f /tmp/mock-repo/.cursorrules
-          test -f /tmp/mock-repo/.claudeignore
-          test -d /tmp/mock-repo/.agents/skills
-          test -d /tmp/mock-repo/.claude/commands
-          grep -q "HARNESS:BEGIN" /tmp/mock-repo/AGENTS.md
-          echo "All verification checks passed!"
-
-  test-installer-windows:
-    name: Test Installer on Windows
+  lint-harness:
+    name: Lint & Frontmatter Integrity
     runs-on: windows-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Run PowerShell Installer into Mock Repo
+      - name: Run Harness Linter
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Path "$env:RUNNER_TEMP\mock-repo" -Force
-          Set-Content -Path "$env:RUNNER_TEMP\mock-repo\AGENTS.md" -Value "# Existing Repo"
-          .\install.ps1 -Target "$env:RUNNER_TEMP\mock-repo"
+          .\scripts\lint-harness.ps1 -Strict
+
+  test-installer-linux:
+    name: Test Profiles & Installer on Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Test Default Profile on Linux
+        run: |
+          mkdir -p /tmp/mock-repo-all
+          cd /tmp/mock-repo-all && git init
+          echo "# Existing Project Rules" > AGENTS.md
+          cd -
+          chmod +x ./install.sh ./scripts/verify.sh
+          ./install.sh /tmp/mock-repo-all all
+
+          test -f /tmp/mock-repo-all/AGENTS.md
+          test -f /tmp/mock-repo-all/CLAUDE.md
+          test -f /tmp/mock-repo-all/CODEX.md
+          test -f /tmp/mock-repo-all/OPENCODE.md
+          test -f /tmp/mock-repo-all/.cursorrules
+          test -d /tmp/mock-repo-all/.agents/skills
+          test -d /tmp/mock-repo-all/.agents/skills/reverse-engineer-anything
+          test -f /tmp/mock-repo-all/.git/hooks/pre-commit
+          grep -q "HARNESS:BEGIN" /tmp/mock-repo-all/AGENTS.md
+          echo "All Profile tests passed on Linux!"
+
+      - name: Test Minimal Profile on Linux
+        run: |
+          mkdir -p /tmp/mock-repo-min
+          ./install.sh /tmp/mock-repo-min minimal
+          test -d /tmp/mock-repo-min/.agents/skills/test-driven-development
+          test ! -d /tmp/mock-repo-min/.agents/skills/ida-reverse
+          echo "Minimal Profile test passed on Linux!"
+
+  test-installer-windows:
+    name: Test Profiles & Installer on Windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Test Auto & Minimal Profiles on Windows
+        shell: pwsh
+        run: |
+          # 1. Test Minimal Profile
+          $minRepo = "$env:RUNNER_TEMP\mock-repo-min"
+          New-Item -ItemType Directory -Path $minRepo -Force
+          .\install.ps1 -Target $minRepo -Profile minimal
           
-          if (-not (Test-Path "$env:RUNNER_TEMP\mock-repo\CLAUDE.md")) { throw "CLAUDE.md missing" }
-          if (-not (Test-Path "$env:RUNNER_TEMP\mock-repo\.claude\commands\plan.md")) { throw "Claude commands missing" }
-          if (-not (Test-Path "$env:RUNNER_TEMP\mock-repo\.agents\skills\python-engineering")) { throw "Python skill missing" }
+          if (-not (Test-Path "$minRepo\CLAUDE.md")) { throw "CLAUDE.md missing" }
+          if (-not (Test-Path "$minRepo\.agents\skills\test-driven-development")) { throw "TDD skill missing" }
+          if (Test-Path "$minRepo\.agents\skills\ida-reverse") { throw "IDA skill should NOT be in minimal profile" }
+
+          # 2. Test Security-RE Profile
+          $secRepo = "$env:RUNNER_TEMP\mock-repo-sec"
+          New-Item -ItemType Directory -Path $secRepo -Force
+          .\install.ps1 -Target $secRepo -Profile security-re
+          if (-not (Test-Path "$secRepo\.agents\skills\reverse-engineer-anything")) { throw "REA skill missing in security profile" }
+
+          # 3. Test Doctor Verification
+          .\scripts\doctor.ps1
           Write-Host "Windows verification passed!"
+
+  test-git-hooks:
+    name: Test Mechanical Git Hooks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Verify Secret Shield Blocks Leaks
+        run: |
+          mkdir -p /tmp/hook-test
+          cd /tmp/hook-test
+          git init
+          git config user.name "Test User"
+          git config user.email "test@example.com"
+          
+          # Install hook
+          mkdir -p .git/hooks
+          cp "$GITHUB_WORKSPACE/scripts/git-hooks/pre-commit" .git/hooks/pre-commit
+          chmod +x .git/hooks/pre-commit
+          
+          # Attempt to stage a forbidden .env file
+          echo "SECRET_KEY=12345" > .env
+          git add .env
+          
+          # Expect commit to FAIL (exit code non-zero)
+          if git commit -m "leaked secret" 2>/dev/null; then
+            echo "ERROR: Hook failed to block .env file commit!"
+            exit 1
+          else
+            echo "SUCCESS: Pre-commit hook successfully blocked .env leak!"
+          fi

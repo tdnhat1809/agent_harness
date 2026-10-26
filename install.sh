@@ -62,6 +62,7 @@ mkdir -p "$TARGET_DIR/.agents/rules" \
          "$TARGET_DIR/docs/patterns" \
          "$TARGET_DIR/docs/templates" \
          "$TARGET_DIR/docs/runbooks" \
+         "$TARGET_DIR/docs/memory" \
          "$TARGET_DIR/scripts/git-hooks"
 
 # 2. Copy .agents directory (hooks, mcp, rules, plugins, roles, workflows)
@@ -118,6 +119,7 @@ cp -f "$SOURCE_DIR/docs/WORKFLOW.md" "$TARGET_DIR/docs/WORKFLOW.md"
 cp -rf "$SOURCE_DIR/docs/patterns/"* "$TARGET_DIR/docs/patterns/"
 cp -rf "$SOURCE_DIR/docs/templates/"* "$TARGET_DIR/docs/templates/"
 [ -d "$SOURCE_DIR/docs/decisions" ] && cp -rf "$SOURCE_DIR/docs/decisions/"* "$TARGET_DIR/docs/decisions/"
+[ -d "$SOURCE_DIR/docs/memory" ] && cp -rf "$SOURCE_DIR/docs/memory/"* "$TARGET_DIR/docs/memory/"
 
 # 5. Copy Cursor .mdc rules and scripts
 if [ -d "$SOURCE_DIR/.cursor/rules" ]; then

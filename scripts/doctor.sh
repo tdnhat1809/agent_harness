@@ -56,6 +56,7 @@ check_file ".agents/skills" "Agent Skills"
 check_file ".claude/commands" "Claude Slash Commands"
 check_file "docs/plans/active" "Durable Active Plans"
 check_file "docs/decisions" "Architecture Decisions (ADR)"
+check_file "docs/memory" "Persistent Memory (Failure Journal)"
 
 echo -e "\n[5] Mechanical Git Hooks:"
 check_file ".git/hooks/pre-commit" "Git Hook: pre-commit (TDD & Secret Shield)"

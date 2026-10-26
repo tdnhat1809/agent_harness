@@ -120,20 +120,30 @@ Khi cài đặt vào repo đích có Git, framework tự động thiết lập:
 
 ---
 
-## 🩺 6. Bộ công cụ Kiểm định & Sức khỏe (Integrity & Doctor)
+## 🛠️ 6. Bộ công cụ Vận hành Nâng cao (Advanced Operational Tooling)
 
-- **Kiểm tra tính toàn vẹn Harness & Skills**:
-  ```powershell
-  powershell -ExecutionPolicy Bypass -File .\scripts\lint-harness.ps1
-  ```
-- **Chẩn đoán môi trường hệ thống**:
-  ```powershell
-  powershell -ExecutionPolicy Bypass -File .\scripts\doctor.ps1
-  ```
+Bộ harness tích hợp sẵn bộ CLI công cụ tiêu chuẩn giúp tăng tốc độ làm việc và ép kỷ luật kỹ thuật:
+
+| Công cụ | Lệnh thực thi (PowerShell / Bash) | Tính năng chính |
+|---|---|---|
+| **Polyglot Test Runner** | `.\scripts\verify.ps1` / `./scripts/verify.sh` | Tự nhận diện test engine (Node, Python, Go, Rust, Java...), đo lường số liệu thời gian và exit code thực tế |
+| **Failure Journal** | `.\scripts\record-lesson.ps1` / `./scripts/record-lesson.sh` | Ghi nhanh sự cố và bài học bất biến vào `docs/memory/failure-journal.md` để chống "mất trí nhớ theo phiên" |
+| **New ADR Generator** | `.\scripts\new-adr.ps1 -Title "..."` / `./scripts/new-adr.sh` | Tự động sinh file Architecture Decision Record tiếp theo trong `docs/decisions/` theo chuẩn mẫu |
+| **Context Checkpoint** | `.\scripts\checkpoint.ps1` / `./scripts/checkpoint.sh` | Đóng gói snapshot tiến độ vào `docs/scratchpad.md` để an tâm Clear Context / mở phiên chat mới |
+| **Harness Linter** | `.\scripts\lint-harness.ps1 -Strict` | Kiểm định 100% tính toàn vẹn của 97 skills, 87 MCP servers và hooks |
+| **System Doctor** | `.\scripts\doctor.ps1` / `./scripts/doctor.sh` | Chẩn đoán toàn diện môi trường runtime, Git Hooks và các file entrypoints |
 
 ---
 
-## 🧭 7. Quy trình làm việc với Agent
+## 🧠 7. Hệ thống Trí nhớ Dài hạn (Cross-Session Persistent Memory)
+
+Agent không còn bị "mất trí nhớ" giữa các phiên chat nhờ 2 tệp lưu trữ trung tâm:
+1. [docs/memory/failure-journal.md](file:///D:/python/agent-harness-template/docs/memory/failure-journal.md): Danh mục các sự cố kỹ thuật, nguyên nhân gốc rễ và bài học rút ra để Agent không bao giờ lặp lại lỗi cũ.
+2. [docs/memory/architectural-precedents.md](file:///D:/python/agent-harness-template/docs/memory/architectural-precedents.md): Các quyết định kiến trúc, quy chuẩn mã nguồn và cổng mạng đã được phê duyệt để Agent không hỏi lại các câu hỏi cũ.
+
+---
+
+## 🧭 8. Quy trình làm việc với Agent
 
 1. **Task nhỏ (Bounded Change)**: Fix bug, thêm hàm, đổi CSS ➔ Agent tự làm theo TDD (test RED ➔ code GREEN ➔ chứng minh proof), phản hồi cực nhanh.
 2. **Task lớn (Durable Planned Change)**: Thêm tính năng mới, refactor lớn ➔ Agent tự phát hiện "Work Shape" qua `docs/WORKFLOW.md`, tự sinh plan trong `docs/plans/active/<ten-task>.md`, thực hiện theo từng checkpoint và lưu bằng chứng vào `docs/plans/completed/`.

@@ -64,6 +64,7 @@ $dirsToCreate = @(
     "$Target\docs\patterns",
     "$Target\docs\templates",
     "$Target\docs\runbooks",
+    "$Target\docs\memory",
     "$Target\scripts\git-hooks"
 )
 
@@ -157,6 +158,7 @@ if (Test-Path "$sourceDir\docs\scratchpad.md") { Copy-Item "$sourceDir\docs\scra
 Copy-Item "$sourceDir\docs\patterns\*" "$Target\docs\patterns\" -Recurse -Force
 Copy-Item "$sourceDir\docs\templates\*" "$Target\docs\templates\" -Recurse -Force
 if (Test-Path "$sourceDir\docs\decisions") { Copy-Item "$sourceDir\docs\decisions\*" "$Target\docs\decisions\" -Recurse -Force }
+if (Test-Path "$sourceDir\docs\memory") { Copy-Item "$sourceDir\docs\memory\*" "$Target\docs\memory\" -Recurse -Force }
 
 # 5. Copy Cursor .mdc rules and scripts
 if (Test-Path "$sourceDir\.cursor\rules") {
