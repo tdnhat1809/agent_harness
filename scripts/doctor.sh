@@ -57,6 +57,10 @@ check_file ".claude/commands" "Claude Slash Commands"
 check_file "docs/plans/active" "Durable Active Plans"
 check_file "docs/decisions" "Architecture Decisions (ADR)"
 
+echo -e "\n[5] Mechanical Git Hooks:"
+check_file ".git/hooks/pre-commit" "Git Hook: pre-commit (TDD & Secret Shield)"
+check_file ".git/hooks/pre-push" "Git Hook: pre-push (Remote Guard)"
+
 echo -e "\n========================================================"
 echo -e "\033[32m   DIAGNOSIS COMPLETE! YOUR HARNESS IS PRODUCTION-READY \033[0m"
 echo -e "========================================================\n"

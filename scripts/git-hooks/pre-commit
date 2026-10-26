@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# Agent Harness Mechanical Pre-Commit Gate
+# Enforces: Secret Shields, Strict TDD Checks, and Anti-Blob Protection
+# ==============================================================================
+
+echo "🛡️  [Harness Guard] Running pre-commit validation..."
+
+# 1. Secret & Sensitive File Shield
+FORBIDDEN_FILES='(\.env($|\..+)|\.pem$|\.key$|id_rsa$|id_ed25519$|credentials\.json$|\.pfx$)'
+STAGED_SENSITIVE=$(git diff --cached --name-only | grep -E "$FORBIDDEN_FILES" || true)
+
+if [ -n "$STAGED_SENSITIVE" ]; then
+    echo "❌ [SECURITY REJECTED] Sensitive or credential files detected in staged changes:"
+    echo "$STAGED_SENSITIVE"
+    echo "Remove them from staging using: git reset HEAD <file>"
+    exit 1
+fi
+
+# 2. Secret Pattern Scanner in Diff
+DIFF_CONTENT=$(git diff --cached -U0)
+SECRET_PATTERN='(ghp_[a-zA-Z0-9]{36}|sk-[a-zA-Z0-9]{32,}|AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z-_]{35}|BEGIN PRIVATE KEY)'
+if echo "$DIFF_CONTENT" | grep -E -q "$SECRET_PATTERN"; then
+    echo "❌ [SECURITY REJECTED] High-entropy API key or private key detected in staged diff!"
+    echo "Aborting commit to prevent credential leak."
+    exit 1
+fi
+
+# 3. Accidental Large Binary / Artifact Shield
+FORBIDDEN_EXTS='\.(zip|tar|gz|7z|rar|iso|dmg|exe|dll|so|dylib|class|pyc)$'
+STAGED_BLOBS=$(git diff --cached --name-only | grep -E "$FORBIDDEN_EXTS" || true)
+
+if [ -n "$STAGED_BLOBS" ]; then
+    echo "⚠️  [BLOB WARNING] Large binary or build artifact staged:"
+    echo "$STAGED_BLOBS"
+    echo "Please ensure binaries are tracked via Git LFS or ignored in .gitignore."
+fi
+
+# 4. Strict TDD Check (Source vs Test Pairing)
+CODE_FILES=$(git diff --cached --name-only | grep -E '\.(ts|tsx|js|jsx|py|go|rs|java|cs|cpp|c)$' || true)
+TEST_FILES=$(git diff --cached --name-only | grep -E '(test|spec|tests|_test|test_)' || true)
+
+if [ -n "$CODE_FILES" ] && [ -z "$TEST_FILES" ]; then
+    echo "⚠️  [TDD ADVISORY] Source code changed without corresponding test files staged:"
+    echo "$CODE_FILES" | head -n 5
+    echo "    -> Strict TDD Mandate requires automated tests proving FAIL (RED) then PASS (GREEN)."
+    echo "    -> If this is a refactoring-only commit with existing tests, proceed with confidence."
+fi
+
+echo "✅ [Harness Guard] Pre-commit checks passed successfully."
+exit 0

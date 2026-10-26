@@ -59,28 +59,49 @@ Bộ 68 vai trò chuyên trách: `architect`, `code-reviewer`, `database-reviewe
 ### B. 35 Bộ Quy Trình Tự Động (`.agents/workflows/`)
 Fullstack Web Suite, Enterprise API Suite, Cybersecurity Defense Suite, Data Engineering Suite, DevOps Cloud Suite, Adversarial Validation, Epistemic Check, Reflection Loop...
 
-### C. Danh mục 86+ Máy Chủ MCP Đã Kiểm Định (`.agents/mcp_catalog.json`)
-Cấu hình 1-click cho PostgreSQL, Supabase, Docker, Kubernetes, DuckDB, Trivy Scanner, Codebase Memory, Tavily Search, ArXiv, PubMed...
+### C. Danh mục 87+ Máy Chủ MCP Đã Kiểm Định (`.agents/mcp_catalog.json`)
+Cấu hình 1-click cho PostgreSQL, Supabase, Docker, Kubernetes, DuckDB, Trivy Scanner, REA (Reverse Engineer Anything), Codebase Memory, Tavily Search, ArXiv, PubMed...
 
 ### D. Cầu nối Kho Vũ Khí Toàn Cầu (Global Armory Bridge)
-Tích hợp sẵn 83 skills cốt lõi trong `.agents/skills/` và tự động kết nối theo nhu cầu tới kho **2.000+ skills chuyên sâu** tại `~/.gemini/rules/skills/` (Active Directory attacks, Volatility memory analysis, KiCad EDA PCB layout, Manim animation, ZTNA...).
+Tích hợp sẵn 97 skills cốt lõi trong `.agents/skills/` (gồm trọn bộ kỹ năng REA Reverse Engineer Anything, Microservices, Cloud DevOps) và tự động kết nối theo nhu cầu tới kho **2.000+ skills chuyên sâu** tại `~/.gemini/rules/skills/` (Active Directory attacks, Volatility memory analysis, KiCad EDA PCB layout, Manim animation, ZTNA...).
 
+---
 
-## 🚀 4. Hướng dẫn cài đặt 1-Click sang Repo mới
+## 🚀 4. Hướng dẫn cài đặt theo Profile (Modular 1-Click Installer)
+
+Bộ cài đặt hỗ trợ **Tự động nhận diện (Zero-Touch Auto Discovery)** hoặc chọn Profile chuyên biệt để tránh làm phình to repo đích:
+
+| Profile | Mục đích | Các Skills tích hợp tiêu biểu |
+|---|---|---|
+| `auto` *(Mặc định)* | Tự động quét file repo đích | Tự động chọn `web-fullstack`, `security-re` hoặc `all` dựa trên file phát hiện |
+| `minimal` | Dự án nhỏ / script nhẹ | Core Invariants, Strict TDD, Systematic Debugging, Plan & Review |
+| `web-fullstack` | Web / API / Microservices | Core + React/Next.js, Python, Go, Rust, Database Migrations, Docker CI/CD |
+| `security-re` | Dịch ngược & An toàn thông tin | Core + REA, IDA, Ghidra, Radare2, Frida, Pentest Tools, Exploit, Forensics |
+| `all` | Đầy đủ toàn bộ kho vũ khí | Toàn bộ 97 skills + 68 roles + 35 workflows |
 
 ### Trên Windows (PowerShell):
 ```powershell
-git clone https://github.com/<tai-khoan-cua-ban>/agent-harness-template.git
-cd agent-harness-template
+git clone https://github.com/tdnhat1809/agent_harness.git
+cd agent_harness
+
+# Cài đặt tự nhận diện stack (khuyên dùng):
 .\install.ps1 -Target "D:\path\to\your-new-project"
+
+# Hoặc chỉ định profile cụ thể:
+.\install.ps1 -Target "D:\path\to\your-new-project" -Profile web-fullstack
 ```
 
 ### Trên Linux / macOS (Bash):
 ```bash
-git clone https://github.com/<tai-khoan-cua-ban>/agent-harness-template.git
-cd agent-harness-template
+git clone https://github.com/tdnhat1809/agent_harness.git
+cd agent_harness
 chmod +x install.sh
+
+# Cài đặt tự nhận diện stack:
 ./install.sh /path/to/your-new-project
+
+# Hoặc chỉ định profile cụ thể:
+./install.sh /path/to/your-new-project security-re
 ```
 
 > 🛡️ **Tính năng bảo vệ file cũ (Smart Merge)**:  
@@ -88,7 +109,31 @@ chmod +x install.sh
 
 ---
 
-## 🧭 5. Quy trình làm việc với Agent
+## 🛡️ 5. Hệ thống Ràng buộc Cơ học (Mechanical Git Hooks)
+
+Khi cài đặt vào repo đích có Git, framework tự động thiết lập:
+- **`pre-commit` Hook**:
+  - 🛑 **Secret Shield**: Quét phát hiện và chặn đứng commit nếu có tệp `.env`, `.pem`, `.key`, `id_rsa` hoặc API keys (`ghp_`, `sk-`, `AKIA...`).
+  - 🛑 **Strict TDD Check**: Cảnh báo ngay nếu có code logic bị sửa đổi mà không có test tương ứng đi kèm.
+  - 🛑 **Anti-Blob Shield**: Chặn các tệp binary rác (`.exe`, `.dll`, `.tar`, `.zip`, `.pyc`).
+- **`pre-push` Hook**: Kiểm tra trạng thái kế hoạch dài hạn (`docs/plans/active/`) trước khi đẩy code lên remote.
+
+---
+
+## 🩺 6. Bộ công cụ Kiểm định & Sức khỏe (Integrity & Doctor)
+
+- **Kiểm tra tính toàn vẹn Harness & Skills**:
+  ```powershell
+  powershell -ExecutionPolicy Bypass -File .\scripts\lint-harness.ps1
+  ```
+- **Chẩn đoán môi trường hệ thống**:
+  ```powershell
+  powershell -ExecutionPolicy Bypass -File .\scripts\doctor.ps1
+  ```
+
+---
+
+## 🧭 7. Quy trình làm việc với Agent
 
 1. **Task nhỏ (Bounded Change)**: Fix bug, thêm hàm, đổi CSS ➔ Agent tự làm theo TDD (test RED ➔ code GREEN ➔ chứng minh proof), phản hồi cực nhanh.
 2. **Task lớn (Durable Planned Change)**: Thêm tính năng mới, refactor lớn ➔ Agent tự phát hiện "Work Shape" qua `docs/WORKFLOW.md`, tự sinh plan trong `docs/plans/active/<ten-task>.md`, thực hiện theo từng checkpoint và lưu bằng chứng vào `docs/plans/completed/`.

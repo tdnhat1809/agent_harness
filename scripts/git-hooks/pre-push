@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# Agent Harness Mechanical Pre-Push Gate
+# Enforces: Remote protection and environment consistency
+# ==============================================================================
+
+echo "🚀 [Harness Guard] Running pre-push checks..."
+
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# 1. Warn on direct push to main/master without verification
+if [ "$CURRENT_BRANCH" = "main" ] || [ "$CURRENT_BRANCH" = "master" ]; then
+    echo "ℹ️  [PRODUCTION NOTICE] Pushing directly to $CURRENT_BRANCH branch."
+fi
+
+# 2. Check for active uncompleted high-risk plans
+if [ -d "docs/plans/active" ]; then
+    ACTIVE_PLANS=$(find docs/plans/active -type f ! -name ".gitkeep" 2>/dev/null || true)
+    if [ -n "$ACTIVE_PLANS" ]; then
+        echo "⚠️  [WORKFLOW NOTICE] Active durable plans found in docs/plans/active/:"
+        echo "$ACTIVE_PLANS"
+        echo "Ensure completed tasks are moved to docs/plans/completed/ with evidence."
+    fi
+fi
+
+echo "✅ [Harness Guard] Pre-push verification passed."
+exit 0

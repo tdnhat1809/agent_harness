@@ -59,6 +59,10 @@ Check-File ".claude\commands" "Claude Slash Commands"
 Check-File "docs\plans\active" "Durable Active Plans"
 Check-File "docs\decisions" "Architecture Decisions (ADR)"
 
+Write-Host "`n[5] Mechanical Git Hooks:" -ForegroundColor Yellow
+Check-File ".git\hooks\pre-commit" "Git Hook: pre-commit (TDD & Secret Shield)"
+Check-File ".git\hooks\pre-push" "Git Hook: pre-push (Remote Guard)"
+
 Write-Host "`n========================================================" -ForegroundColor Cyan
 Write-Host "   DIAGNOSIS COMPLETE! YOUR HARNESS IS PRODUCTION-READY " -ForegroundColor Green
 Write-Host "========================================================`n" -ForegroundColor Cyan
