@@ -63,6 +63,11 @@
 | [python-engineering](python-engineering/SKILL.md) | Production-grade Python engineering best practices covering FastAPI, Django, Pytest TDD, Type Annotations, Pydantic v2, Ruff, and async patterns. |
 | [radare2](radare2/SKILL.md) | Use this skill whenever the user wants to analyze binaries with radare2/r2 from the command line, including reverse engineering, disassembly, function analys... |
 | [radio-sdr](radio-sdr/SKILL.md) | Use for authorized RF/SDR security research including signal identification, replay feasibility study in shielded labs, and wireless protocol analysis outsid... |
+| [rea-analysis-optimization](rea-analysis-optimization/SKILL.md) | Optimize REA providers and shared analysis workflows for agent context, latency, CPU, and memory while preserving correctness and Evidence. Use for analysis ... |
+| [rea-changelog-update](rea-changelog-update/SKILL.md) | Prepare or rewrite REA release changelogs and GitHub release notes from pinned Git history, with verified contributor thanks and Release Please synchronization. |
+| [rea-ci-tests-audit](rea-ci-tests-audit/SKILL.md) | Audit REA CI and test suites for correctness, fixture drift, false passes, and measured performance; use for suite or workflow investigations and efficiency ... |
+| [rea-tool-design](rea-tool-design/SKILL.md) | Design or change REA investigation tools, CLI/MCP contracts, provider capabilities, and Evidence semantics. |
+| [reverse-engineer-anything](reverse-engineer-anything/SKILL.md) | Reverse engineer native, managed, Electron/JavaScript, packaged, firmware, and browser targets with REA, and build agent environments (AgentEnv bundles) of w... |
 | [dsl-vm-reverse](reverse-engineering/dsl-vm-reverse/SKILL.md) | Reverse JavaScript-based custom DSL/VM interpreters, non-standard WASM-like runtimes, and risk-control engines. Use when analyzing IIFE or switch-based opcod... |
 | [reverse-engineering](reverse-engineering/SKILL.md) | Provides reverse engineering techniques. Use when the main job is to understand how a compiled, obfuscated, packed, or virtualized target works before exploi... |
 | [reverse-skill-router](reverse-skill-router/SKILL.md) | Routes reverse engineering, exploitation, penetration testing, malware, mobile, firmware, browser automation, documentation, and security tasks to the approp... |
@@ -146,6 +151,11 @@ skills/pwn-chain/SKILL.md/
 skills/python-engineering/SKILL.md/
 skills/radare2/SKILL.md/
 skills/radio-sdr/SKILL.md/
+skills/rea-analysis-optimization/SKILL.md/
+skills/rea-changelog-update/SKILL.md/
+skills/rea-ci-tests-audit/SKILL.md/
+skills/rea-tool-design/SKILL.md/
+skills/reverse-engineer-anything/SKILL.md/
 skills/reverse-engineering/dsl-vm-reverse/SKILL.md/
 skills/reverse-engineering/SKILL.md/
 skills/reverse-skill-router/SKILL.md/

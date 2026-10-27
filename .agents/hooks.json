@@ -27,6 +27,12 @@
         "description": "Ensures UI components adhere to impeccable design standards and Vercel React best practices",
         "action": "enforce_rule",
         "rule": "ui-ux-craft.md"
+      },
+      {
+        "name": "context-pruning-gate",
+        "description": "Enforces head/tail log truncation and diff delta minimization to prevent token bloat",
+        "action": "enforce_rule",
+        "rule": "context-pruning.md"
       }
     ],
     "pre_complete": [

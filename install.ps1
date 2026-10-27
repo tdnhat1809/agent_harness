@@ -98,14 +98,16 @@ $minimalSkills = @(
     'empirical-evidence-guard', 'encode-invariant', 'writing-plans', 'workflow-plan',
     'workflow-feature-dev', 'workflow-code-review', 'workflow-build-fix',
     'workflow-quality-gate', 'workflow-pr', 'caveman', 'ponytail', 'brainstorming',
-    'docs-generator'
+    'docs-generator', 'executing-plans', 'writing-skills'
 )
 
 $webSkills = $minimalSkills + @(
     'vercel-react-best-practices', 'python-engineering', 'go-engineering',
     'rust-engineering', 'database-migrations-design', 'docker-devops-ci',
     'web-design-guidelines', 'design-taste', 'impeccable-design', 'api-security',
-    'code-audit', 'subagent-driven-development', 'diagram-generator', 'engineering-wisdom'
+    'code-audit', 'subagent-driven-development', 'diagram-generator', 'engineering-wisdom',
+    'using-git-worktrees', 'finishing-a-development-branch', 'dispatching-parallel-agents',
+    'find-skills'
 )
 
 $securitySkills = $minimalSkills + @(
@@ -118,7 +120,8 @@ $securitySkills = $minimalSkills + @(
     'pentest-tools', 'api-security', 'cloud-k8s', 'database-security', 'windows-ad',
     'wifi-wireless', 'email-security', 'llm-security', 'threat-hunting',
     'browser-automation', 'browser-extension-reverse', 'case-review', 'thick-client',
-    'radio-sdr', 'ot-ics'
+    'radio-sdr', 'ot-ics', 'using-git-worktrees', 'finishing-a-development-branch',
+    'dispatching-parallel-agents', 'find-skills'
 )
 
 # Always copy root metadata files in .agents/skills

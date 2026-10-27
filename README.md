@@ -62,8 +62,8 @@ Fullstack Web Suite, Enterprise API Suite, Cybersecurity Defense Suite, Data Eng
 ### C. Danh mục 87+ Máy Chủ MCP Đã Kiểm Định (`.agents/mcp_catalog.json`)
 Cấu hình 1-click cho PostgreSQL, Supabase, Docker, Kubernetes, DuckDB, Trivy Scanner, REA (Reverse Engineer Anything), Codebase Memory, Tavily Search, ArXiv, PubMed...
 
-### D. Cầu nối Kho Vũ Khí Toàn Cầu (Global Armory Bridge)
-Tích hợp sẵn 97 skills cốt lõi trong `.agents/skills/` (gồm trọn bộ kỹ năng REA Reverse Engineer Anything, Microservices, Cloud DevOps) và tự động kết nối theo nhu cầu tới kho **2.000+ skills chuyên sâu** tại `~/.gemini/rules/skills/` (Active Directory attacks, Volatility memory analysis, KiCad EDA PCB layout, Manim animation, ZTNA...).
+### D. Cầu nối Kho Vũ Khí Toàn Cầu (Global Armory Bridge & skills.sh)
+Tích hợp sẵn **103 skills cốt lõi** trong `.agents/skills/` (bao gồm trọn bộ siêu kỹ năng điều phối vòng đời Superpowers, REA Reverse Engineer Anything, Microservices, Cloud DevOps) và tích hợp cổng **`find-skills`** kết nối trực tiếp với package manager mã nguồn mở **[skills.sh](https://skills.sh/)** (`npx skills find` / `npx skills add`) cùng kho **2.000+ skills chuyên sâu** tại `~/.gemini/rules/skills/`.
 
 ---
 
@@ -130,7 +130,8 @@ Bộ harness tích hợp sẵn bộ CLI công cụ tiêu chuẩn giúp tăng t�
 | **Failure Journal** | `.\scripts\record-lesson.ps1` / `./scripts/record-lesson.sh` | Ghi nhanh sự cố và bài học bất biến vào `docs/memory/failure-journal.md` để chống "mất trí nhớ theo phiên" |
 | **New ADR Generator** | `.\scripts\new-adr.ps1 -Title "..."` / `./scripts/new-adr.sh` | Tự động sinh file Architecture Decision Record tiếp theo trong `docs/decisions/` theo chuẩn mẫu |
 | **Context Checkpoint** | `.\scripts\checkpoint.ps1` / `./scripts/checkpoint.sh` | Đóng gói snapshot tiến độ vào `docs/scratchpad.md` để an tâm Clear Context / mở phiên chat mới |
-| **Harness Linter** | `.\scripts\lint-harness.ps1 -Strict` | Kiểm định 100% tính toàn vẹn của 97 skills, 87 MCP servers và hooks |
+| **Self-Regression Benchmark** | `.\scripts\eval-harness.ps1` / `./scripts/eval-harness.sh` | Chạy 4 bài test sát hạch tự động (Secret Shield, TDD Guard, Lint, Verify) và chấm điểm chất lượng (100/100 Grade A+) |
+| **Harness Linter** | `.\scripts\lint-harness.ps1 -Strict` | Kiểm định 100% tính toàn vẹn của 103 skills, 87 MCP servers và hooks |
 | **System Doctor** | `.\scripts\doctor.ps1` / `./scripts/doctor.sh` | Chẩn đoán toàn diện môi trường runtime, Git Hooks và các file entrypoints |
 
 ---
