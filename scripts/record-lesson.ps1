@@ -52,7 +52,7 @@ if ($content.Contains($tableMarker)) {
 # Append detailed section at end
 $detailBlock = @"
 
-### $codeId: $Symptom
+### $($codeId): $Symptom
 - **Date**: $dateStr
 - **Symptom**: $Symptom
 - **Root Cause**: $RootCause

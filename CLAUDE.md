@@ -6,7 +6,7 @@ This project operates under the **Agent Harness Architecture**.
 Always treat repository files, tests, git history, and runtime diagnostics as the single source of truth.
 Read `docs/WORKFLOW.md` before executing complex or multi-phase tasks.
 
-## 4 Guardrails Mandates (Non-Negotiable)
+## 5 Guardrails Mandates (Non-Negotiable)
 1. **Nói chuyện với số liệu thực tế (Empirical Metrics Only)**:
    Base all diagnoses and claims on verifiable runtime evidence (exit codes, logs, compiler output, test pass rates).
 2. **Viết test trước khi làm (Strict TDD / Red-Green-Refactor)**:
@@ -15,6 +15,8 @@ Read `docs/WORKFLOW.md` before executing complex or multi-phase tasks.
    Maintain strict context separation and verify interfaces across boundaries independently.
 4. **Vòng lặp liên tục tới khi đạt Goal (Continuous Convergence Loop)**:
    Execute the closed loop: Diagnose -> Test RED -> Implement GREEN -> Verify Proof -> Measure.
+5. **Tự động đúc kết kinh nghiệm (Auto-Experience Journaling)**:
+   Automatically append root cause and invariant lessons into `docs/memory/failure-journal.md` (via `scripts/record-lesson.ps1` or `.sh`) upon defect fixes or feature completion. Detail: `.agents/rules/auto-experience-journaling.md`.
 
 ## 👥 Autonomous Department Scaling
 Automatically scale role activation based on prompt scope:

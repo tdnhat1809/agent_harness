@@ -53,6 +53,12 @@
         "description": "Prompts agent to suggest opening a fresh session if milestone is completed and context is heavy",
         "action": "enforce_rule",
         "rule": "context-hygiene-handoff.md"
+      },
+      {
+        "name": "auto-experience-journaling-gate",
+        "description": "Requires logging root-cause and invariant lessons into docs/memory/failure-journal.md upon resolving defects or completing feature milestones",
+        "action": "enforce_rule",
+        "rule": "auto-experience-journaling.md"
       }
     ]
   }

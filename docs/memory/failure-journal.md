@@ -1,4 +1,4 @@
-# 📓 Engineering Failure Journal & Lessons Learned
+﻿# 📓 Engineering Failure Journal & Lessons Learned
 
 > **"Learn From Every Outcome" — Invariant 6**  
 > Bản ghi nhớ các lỗi kiến trúc, bug khó, sai lầm thiết kế và bài học xương máu.
@@ -10,6 +10,7 @@
 
 | ID | Ngày | Triệu chứng lỗi (Symptoms) | Nguyên nhân gốc rễ (Root Cause) | Quy tắc phòng ngừa bất biến (Never Do Again) |
 |---|---|---|---|---|
+| `ERR-002` | 2026-10-27 | Agent khong tu dong ghi kinh nghiem vao memory sau khi hoan thanh task | Thieu hook bat buoc trong pre_complete va thieu chi thi cuong che trong cac entrypoint AGENTS.md | Them luat auto-experience-journaling vao pre_complete va quy dinh trong 5 Guardrails Mandates bat buoc chay record-lesson truoc khi nghiem thu |
 | `ERR-001` | 2026-10-27 | Pre-commit hook tự bắt chính mình khi quét diff regex API key | File script chứa chuỗi regex pattern khớp với chính bộ lọc quét nhạy cảm | Thêm pathspec exclude `:(exclude)scripts/git-hooks/*` vào bộ quét diff |
 
 ---
@@ -37,3 +38,11 @@ hoặc trên Linux/macOS:
 ```bash
 ./scripts/record-lesson.sh "Mô tả lỗi" "Nguyên nhân gốc rễ" "Quy tắc không lặp lại"
 ```
+
+
+### `ERR-002`: Agent khong tu dong ghi kinh nghiem vao memory sau khi hoan thanh task
+- **Date**: 2026-10-27
+- **Symptom**: Agent khong tu dong ghi kinh nghiem vao memory sau khi hoan thanh task
+- **Root Cause**: Thieu hook bat buoc trong pre_complete va thieu chi thi cuong che trong cac entrypoint AGENTS.md
+- **Prevention Rule**: Them luat auto-experience-journaling vao pre_complete va quy dinh trong 5 Guardrails Mandates bat buoc chay record-lesson truoc khi nghiem thu
+

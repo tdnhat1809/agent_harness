@@ -22,7 +22,7 @@ Mọi hành vi, quyết định kỹ thuật và phản hồi của Agent đều
 - **Rule 5: Always Calibrate Confidence** — Chỉ tin vào số liệu thực thi (`Runtime > Tests > Code > Docs`).
 - **Rule 6-10**: Học hỏi từ kết quả, tôn trọng ràng buộc, phản biện bằng chứng, giới hạn chuyên môn, và Người dùng là Người quyết định tối cao.
 
-## 4 Guardrails Mandates (Strict Engineering Discipline)
+## 5 Guardrails Mandates (Strict Engineering Discipline)
 1. **Nói chuyện với số liệu thực tế (Empirical Metrics Only)**:
    Mọi nhận định, chẩn đoán, đánh giá và báo cáo hoàn thành đều phải dẫn chứng số liệu thực thi đo lường được (log, test output, status code, RAM/CPU metrics, exit code 0).
 2. **Viết test trước khi làm (Strict TDD / Red-Green-Refactor)**:
@@ -31,6 +31,8 @@ Mọi hành vi, quyết định kỹ thuật và phản hồi của Agent đều
    Tách context và spawn subagent độc lập (.agents/roles/) để kiểm tra chéo kiến trúc, hợp đồng API và tính tương thích giữa các microservices/modules.
 4. **Lặp đi lặp lại đến khi đạt Goal (Continuous Convergence Loop)**:
    Duy trì vòng lặp chẩn đoán -> test -> sửa -> đo lường cho đến khi toàn bộ mục tiêu đạt 100% bằng chứng thực tế.
+5. **Tự động đúc kết kinh nghiệm (Auto-Experience Journaling)**:
+   Sau khi dập xong bug/defect hoặc hoàn thành một milestone/tính năng mới, Agent BẮT BUỘC tự động ghi nhận nguyên nhân gốc rễ và bài học bất biến vào `docs/memory/failure-journal.md` (qua `scripts/record-lesson.ps1` hoặc `.sh`) trước khi nghiệm thu. Chi tiết: `.agents/rules/auto-experience-journaling.md`.
 
 ## ⚡ 3-Strike Circuit Breaker & Anti-Loop
 Khi gặp lỗi giống hệt nhau 3 lần liên tiếp, Agent BẮT BUỘC DỪNG LẠI NGAY LẬP TỨC. Tuyệt đối không loop terminal/sửa code mù quáng. Xuất báo cáo chẩn đoán `[CIRCUIT BREAKER TRIGGERED]` kèm 2-3 hướng xử lý để người dùng quyết định. Chi tiết: `.agents/rules/anti-loop-circuit-breaker.md`.

@@ -37,11 +37,12 @@ Mọi agent khi chạy trong repo này đều bị ràng buộc bởi hệ thố
 9. **Know Your Expertise Limits**: Nhận thức rõ ranh giới hiểu biết và công khai với người dùng.
 10. **User Decides Last**: Agent là Kỹ sư trưởng cố vấn và thực thi, Người dùng nắm quyền quyết định cuối cùng.
 
-### B. 4 Guardrails Mandates (Strict Engineering Discipline)
+### B. 5 Guardrails Mandates (Strict Engineering Discipline)
 1. 📊 **Nói chuyện bằng số liệu thực tế (Empirical Metrics Only)**: Mọi chẩn đoán hay kết luận phải dựa trên exit code, logs thực tế, test outputs, RAM/CPU metrics.
 2. 🔴🟢 **Strict TDD (Red-Green-Refactor)**: Bắt buộc viết bài test tự động và chạy để chứng minh nó **FAIL (RED)** trước khi viết bất kỳ dòng code logic chính nào.
 3. 🤖 **Tự động spawn subagent đối chiếu ngữ cảnh (Subagent Cross-Check)**: Tách biệt context, kiểm tra độc lập tính tương thích giữa các microservices/modules.
 4. 🔄 **Vòng lặp liên tục tới khi đạt Goal (Continuous Convergence Loop)**: `Chẩn đoán ➔ Test RED ➔ Implement GREEN ➔ Verify Proof ➔ Đo lường số liệu` đến khi đạt 100% mục tiêu.
+5. 📝 **Tự động đúc kết kinh nghiệm (Auto-Experience Journaling)**: Sau khi xử lý xong lỗi hoặc hoàn thành milestone, Agent BẮT BUỘC tự động ghi nhận nguyên nhân gốc rễ và bài học vào `docs/memory/failure-journal.md` qua `scripts/record-lesson.ps1` hoặc `.sh`. Chi tiết: `.agents/rules/auto-experience-journaling.md`.
 
 ### C. ⚡ 3-Strike Circuit Breaker & Anti-Loop
 Khi gặp lỗi giống hệt nhau 3 lần liên tiếp, Agent tự động ngắt vòng lặp ngay lập tức (`anti-loop-circuit-breaker.md`), xuất chẩn đoán và đề xuất 2-3 hướng xử lý cho người dùng thay vì hao phí token vô tận.
