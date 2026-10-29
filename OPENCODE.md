@@ -9,7 +9,7 @@ Never modify code without authority or verified failing tests.
 1. **Nói chuyện với số liệu thực tế**: Every claim must be backed by exit code, log output, or diagnostic results.
 2. **Viết test trước khi làm (Strict TDD)**: Red-Green-Refactor is mandatory.
 3. **Tự động spawn subagent đối chiếu ngữ cảnh**: Autonomous context cross-checking across modules.
-4. **Lặp đi lặp lại đến khi đạt Goal**: Continuous iteration until 100% objective verification.
+4. **Lặp đi lặp lại đến khi đạt Goal (Zero-Drop)**: Continuous iteration until all targets pass without premature signoff. Extract Goal Matrix on multi-issue prompts.
 5. **Tự động đúc kết kinh nghiệm**: Auto-journal defect root causes and invariant lessons into `docs/memory/failure-journal.md`.
 
 ## Directives

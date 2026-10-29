@@ -9,3 +9,4 @@ Read `AGENTS.md` and `docs/WORKFLOW.md` as primary authority.
 4. Headless Browsers Only: Never launch headed browser windows (`headless: true`).
 5. Durable Plans: Multi-step work belongs in `docs/plans/active/`.
 6. Auto-Experience Journaling: Append defect root-cause & lessons into `docs/memory/failure-journal.md` upon completion.
+7. Zero-Drop & Multi-Goal: Extract Goal Matrix for multi-issue prompts, run negative boundary tests, and verify full suite before reporting.

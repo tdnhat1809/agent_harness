@@ -13,15 +13,15 @@ Read `docs/WORKFLOW.md` before executing complex or multi-phase tasks.
    Write a failing test (RED) before writing any implementation code (GREEN), then refactor.
 3. **Tự động spawn subagent đối chiếu ngữ cảnh (Subagent Cross-Check)**:
    Maintain strict context separation and verify interfaces across boundaries independently.
-4. **Vòng lặp liên tục tới khi đạt Goal (Continuous Convergence Loop)**:
-   Execute the closed loop: Diagnose -> Test RED -> Implement GREEN -> Verify Proof -> Measure.
+4. **Vòng lặp liên tục tới khi đạt Goal (Continuous Convergence Loop & Zero-Drop)**:
+   For multi-goal prompts (A & B) or `/goal`: Extract Goal Matrix (`zero-drop-multi-goal.md`), fix all items sequentially, enforce negative boundary tests, and iterate `RED -> GREEN -> Full Build & Verify` until 100% pass. Ban premature completion without empirical proof table.
 5. **Tự động đúc kết kinh nghiệm (Auto-Experience Journaling)**:
    Automatically append root cause and invariant lessons into `docs/memory/failure-journal.md` (via `scripts/record-lesson.ps1` or `.sh`) upon defect fixes or feature completion. Detail: `.agents/rules/auto-experience-journaling.md`.
 
 ## 👥 Autonomous Department Scaling
 Automatically scale role activation based on prompt scope:
 - **Tier 1 (Small / 1 file)**: Solo Dev (`@dev`) via fast TDD.
-- **Tier 2 (Medium / 2-4 files)**: Trio Squad (`@lead` + `@dev` + `@qa`).
+- **Tier 2 (Medium / 2-4 files / Multi-defect / /goal)**: Trio Squad (`@lead` + `@dev` + `@qa`) for adversarial cross-checking and edge-case verification.
 - **Tier 3 (Large / Auth / Payment / Multi-service / Migration)**: Full IT Department (`@lead` + `@dev` + `@qa` + `@security` + `@devops`) with 5-signoff verification.
 
 ## 🤖 Autonomous Stack & Test Discovery (Zero-Touch)

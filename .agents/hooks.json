@@ -13,6 +13,12 @@
         "description": "Forces the agent to stop and ask if core specifications or authority are missing",
         "action": "enforce_rule",
         "rule": "clarify-before-mutate.md"
+      },
+      {
+        "name": "zero-drop-multi-goal-check",
+        "description": "Extracts explicit checklist for all prompt defects/goals and mandates subagent delegation for multi-part tasks",
+        "action": "enforce_rule",
+        "rule": "zero-drop-multi-goal.md"
       }
     ],
     "post_edit": [
@@ -59,6 +65,12 @@
         "description": "Requires logging root-cause and invariant lessons into docs/memory/failure-journal.md upon resolving defects or completing feature milestones",
         "action": "enforce_rule",
         "rule": "auto-experience-journaling.md"
+      },
+      {
+        "name": "multi-goal-convergence-proof-gate",
+        "description": "Enforces 3-tier testing, negative boundary proof, and proof-of-execution matrix for all checklist targets before completion",
+        "action": "enforce_rule",
+        "rule": "zero-drop-multi-goal.md"
       }
     ]
   }

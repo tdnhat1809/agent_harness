@@ -10,6 +10,7 @@
 
 | ID | Ngày | Triệu chứng lỗi (Symptoms) | Nguyên nhân gốc rễ (Root Cause) | Quy tắc phòng ngừa bất biến (Never Do Again) |
 |---|---|---|---|---|
+| `ERR-004` | 2026-10-29 | Agent bo sot loi B trong prompt da muc tieu va chi test qua loa happy path roi bao cao xong som | Thieu ma tran phan ra muc tieu Turn 1, thieu rao chan kiem thu 3 tang (negative + full suite), va thieu su kiem tra cheo tu subagent QA | Ap dung luat zero-drop-multi-goal.md vao pre_task/pre_complete, bat buoc xuat Proof-of-Execution Matrix kem exit code 0 va trieu tap @qa khi gap task da loi |
 | `ERR-003` | 2026-10-29 | Agent ngung ghi failure-journal trong cac phien lam viec dai khi sua bug nghiem trong | Chi thi prompt bi suy giam chu y (Lost-in-the-Middle) khi context dai, thieu mechanical gate chan lenh git commit | Cai dat commit-msg hook tu dong block commit fix: neu thieu failure-journal.md, va them defect transition prompt vao verify.ps1 |
 | `ERR-002` | 2026-10-27 | Agent khong tu dong ghi kinh nghiem vao memory sau khi hoan thanh task | Thieu hook bat buoc trong pre_complete va thieu chi thi cuong che trong cac entrypoint AGENTS.md | Them luat auto-experience-journaling vao pre_complete va quy dinh trong 5 Guardrails Mandates bat buoc chay record-lesson truoc khi nghiem thu |
 | `ERR-001` | 2026-10-27 | Pre-commit hook tự bắt chính mình khi quét diff regex API key | File script chứa chuỗi regex pattern khớp với chính bộ lọc quét nhạy cảm | Thêm pathspec exclude `:(exclude)scripts/git-hooks/*` vào bộ quét diff |
@@ -54,4 +55,12 @@ hoặc trên Linux/macOS:
 - **Symptom**: Agent ngung ghi failure-journal trong cac phien lam viec dai khi sua bug nghiem trong
 - **Root Cause**: Chi thi prompt bi suy giam chu y (Lost-in-the-Middle) khi context dai, thieu mechanical gate chan lenh git commit
 - **Prevention Rule**: Cai dat commit-msg hook tu dong block commit fix: neu thieu failure-journal.md, va them defect transition prompt vao verify.ps1
+
+
+
+### `ERR-004`: Agent bo sot loi B trong prompt da muc tieu va chi test qua loa happy path roi bao cao xong som
+- **Date**: 2026-10-29
+- **Symptom**: Agent bo sot loi B trong prompt da muc tieu va chi test qua loa happy path roi bao cao xong som
+- **Root Cause**: Thieu ma tran phan ra muc tieu Turn 1, thieu rao chan kiem thu 3 tang (negative + full suite), va thieu su kiem tra cheo tu subagent QA
+- **Prevention Rule**: Ap dung luat zero-drop-multi-goal.md vao pre_task/pre_complete, bat buoc xuat Proof-of-Execution Matrix kem exit code 0 va trieu tap @qa khi gap task da loi
 
