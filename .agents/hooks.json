@@ -25,6 +25,12 @@
         "description": "Mandates researching unfamiliar libraries, new versions, or external repositories via GitHub/Web before editing code",
         "action": "enforce_rule",
         "rule": "autonomous-research.md"
+      },
+      {
+        "name": "dynamic-context-sharding-gate",
+        "description": "Applies domain-specific rule routing via route-context.ps1 to reduce attention dilution",
+        "action": "enforce_rule",
+        "rule": "context-pruning.md"
       }
     ],
     "post_edit": [

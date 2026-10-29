@@ -65,6 +65,18 @@ Check-File ".git\hooks\pre-commit" "Git Hook: pre-commit (TDD & Secret Shield)"
 Check-File ".git\hooks\commit-msg" "Git Hook: commit-msg (Failure Journal Enforcer)"
 Check-File ".git\hooks\pre-push" "Git Hook: pre-push (Remote Guard)"
 
+Write-Host "`n[6] Autonomous Operational Tooling Suite:" -ForegroundColor Yellow
+Check-File "scripts\route-context.ps1" "Dynamic Context Sharding (route-context)"
+Check-File "scripts\ui-audit.ps1" "Visual UI & Anti-AI Slop Auditor (ui-audit)"
+Check-File "scripts\sandbox-run.ps1" "Ephemeral Sandbox Isolation (sandbox-run)"
+Check-File "scripts\test-agent-adherence.ps1" "Agent Red-Team Benchmark (test-agent-adherence)"
+Check-File "scripts\mutation-test.ps1" "Mutation Testing Engine (mutation-test)"
+Check-File "scripts\self-heal.ps1" "Workspace Self-Heal & Rollback (self-heal)"
+Check-File "scripts\inspect-package.ps1" "Live Package Inspector (inspect-package)"
+Check-File "scripts\query-memory.ps1" "Semantic Memory Indexer (query-memory)"
+Check-File "scripts\record-lesson.ps1" "Failure Journal Recorder (record-lesson)"
+Check-File "scripts\generate-pr.ps1" "Automated PR Generator (generate-pr)"
+
 Write-Host "`n========================================================" -ForegroundColor Cyan
 Write-Host "   DIAGNOSIS COMPLETE! YOUR HARNESS IS PRODUCTION-READY " -ForegroundColor Green
 Write-Host "========================================================`n" -ForegroundColor Cyan

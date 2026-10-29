@@ -1,0 +1,25 @@
+{
+  "name": "Universal AI Agent Sandbox",
+  "image": "mcr.microsoft.com/devcontainers/universal:2-linux",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "enableNonRootDocker": "true"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "GitHub.copilot",
+        "ms-azuretools.vscode-docker",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  },
+  "postCreateCommand": "chmod +x ./install.sh ./scripts/*.sh 2>/dev/null || true",
+  "remoteUser": "vscode"
+}

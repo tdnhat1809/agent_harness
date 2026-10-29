@@ -139,13 +139,17 @@ Bộ harness tích hợp sẵn bộ CLI công cụ tiêu chuẩn giúp tăng t�
 
 | Công cụ | Lệnh thực thi (PowerShell / Bash) | Chức năng chính |
 |---|---|---|
+| **Dynamic Context Sharding** | `.\scripts\route-context.ps1` / `./scripts/route-context.sh` | Phân loại intent, chọn lọc rules và skills theo domain, loại bỏ 70-90% token rác chống loãng chú ý |
+| **Visual UI & Anti-AI Slop Auditor** | `.\scripts\ui-audit.ps1` / `./scripts/ui-audit.sh` | Kiểm định UI component bắt lỗi icon emoji, gradient tím và kiểm tra khả năng tiếp cận WCAG (a11y) |
+| **Ephemeral Sandbox Runner** | `.\scripts\sandbox-run.ps1` / `./scripts/sandbox-run.sh` | Chạy lệnh trong container Docker cô lập hoặc ephemeral snapshot chống tác động máy host |
+| **Agent Red-Team Benchmark** | `.\scripts\test-agent-adherence.ps1` / `./scripts/test-agent-adherence.sh` | Bộ 6 thử thách sát hạch bẫy hành vi: chống rớt mục tiêu, chống leak secret, chống slop UI, ép failure journal |
+| **Semantic Memory Indexer** | `.\scripts\query-memory.ps1` / `./scripts/query-memory.sh` | Tra cứu kinh nghiệm và quyết định kiến trúc với thuật toán xếp hạng BM25 và từ điển đồng nghĩa kỹ thuật |
 | **Polyglot Test Runner** | `.\scripts\verify.ps1` / `./scripts/verify.sh` | Tự nhận diện test engine (Node, Python, Go, Rust, Java...), đo thời gian thực thi và exit code |
 | **Mutation Testing Guard** | `.\scripts\mutation-test.ps1` / `./scripts/mutation-test.sh` | Tự động tiêm lỗi đột biến vào code logic để thẩm định chất lượng test (Chống test ảo/hollow test) |
 | **Workspace Self-Heal** | `.\scripts\self-heal.ps1` / `./scripts/self-heal.sh` | Tạo snapshot trước task, dọn cache rác, rollback an toàn về trạng thái sạch nhưng bảo toàn `docs/memory/` |
 | **Plan Scaffolder & Kanban** | `.\scripts\new-plan.ps1`, `.\scripts\plan-status.ps1` | Khởi tạo plan chuẩn, theo dõi tiến độ Kanban % ngay trên terminal, tự động lưu trữ khi hoàn tất |
 | **Automated PR Generator** | `.\scripts\generate-pr.ps1` / `./scripts/generate-pr.sh` | Phân tích git diff, trích xuất bảng bằng chứng verify và bài học kinh nghiệm để sinh PR description chuẩn |
 | **Package Inspector** | `.\scripts\inspect-package.ps1` / `./scripts/inspect-package.sh` | Tra cứu package registry (npm, PyPI, crates.io, Go, GitHub) lấy chữ ký hàm thật, chống ảo giác API |
-| **Knowledge & Memory Query** | `.\scripts\query-memory.ps1` / `./scripts/query-memory.sh` | Tra cứu nhanh các bài học quá khứ và quyết định kiến trúc với số lượng token tiêu thụ tối thiểu |
 | **Failure Journal Recorder** | `.\scripts\record-lesson.ps1` / `./scripts/record-lesson.sh` | Ghi nhận sự cố và bài học bất biến vào `docs/memory/failure-journal.md` |
 | **Architecture Decision Record** | `.\scripts\new-adr.ps1 -Title "..."` / `./scripts/new-adr.sh` | Tự động sinh file ADR tiếp theo trong `docs/decisions/` theo cấu trúc chuẩn |
 | **Context Checkpoint** | `.\scripts\checkpoint.ps1` / `./scripts/checkpoint.sh` | Đóng gói snapshot tiến độ vào `docs/scratchpad.md` để an tâm Clear Context / mở phiên chat mới |
