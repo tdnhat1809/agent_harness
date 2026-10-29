@@ -130,6 +130,11 @@ Bộ harness tích hợp sẵn bộ CLI công cụ tiêu chuẩn giúp tăng t�
 | Công cụ | Lệnh thực thi (PowerShell / Bash) | Tính năng chính |
 |---|---|---|
 | **Polyglot Test Runner** | `.\scripts\verify.ps1` / `./scripts/verify.sh` | Tự nhận diện test engine (Node, Python, Go, Rust, Java...), đo lường số liệu thời gian và exit code thực tế |
+| **Mutation Testing Guard** | `.\scripts\mutation-test.ps1` / `./scripts/mutation-test.sh` | Tự động tiêm lỗi đột biến vào code để kiểm tra xem test có thực sự bắt được bug không (Chống test ảo/hollow test) |
+| **Workspace Self-Heal** | `.\scripts\self-heal.ps1` / `./scripts/self-heal.sh` | Tạo snapshot an toàn trước task, dọn cache rác, hoàn tác khẩn cấp về trạng thái sạch nhưng bảo toàn `docs/memory/` |
+| **Plan Scaffolder & Kanban** | `.\scripts\new-plan.ps1`, `.\scripts\plan-status.ps1` | Khởi tạo nhanh plan bền vững, theo dõi tiến độ Kanban % hoàn thành ngay trên terminal, tự động archive khi xong |
+| **Automated PR Generator** | `.\scripts\generate-pr.ps1` / `./scripts/generate-pr.sh` | Tự động phân tích git diff, trích xuất bảng bằng chứng verify và bài học kinh nghiệm để sinh bản mô tả PR chuẩn mực |
+| **Knowledge & Memory Query** | `.\scripts\query-memory.ps1` / `./scripts/query-memory.sh` | Tra cứu nhanh các bài học quá khứ và quyết định kiến trúc với số lượng token tối thiểu |
 | **Failure Journal** | `.\scripts\record-lesson.ps1` / `./scripts/record-lesson.sh` | Ghi nhanh sự cố và bài học bất biến vào `docs/memory/failure-journal.md` để chống "mất trí nhớ theo phiên" |
 | **New ADR Generator** | `.\scripts\new-adr.ps1 -Title "..."` / `./scripts/new-adr.sh` | Tự động sinh file Architecture Decision Record tiếp theo trong `docs/decisions/` theo chuẩn mẫu |
 | **Context Checkpoint** | `.\scripts\checkpoint.ps1` / `./scripts/checkpoint.sh` | Đóng gói snapshot tiến độ vào `docs/scratchpad.md` để an tâm Clear Context / mở phiên chat mới |
