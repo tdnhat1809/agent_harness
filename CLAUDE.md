@@ -32,6 +32,8 @@ Do not ask the user for build or test instructions. Automatically discover them 
 - **Rust**: `Cargo.toml` -> `cargo test`
 - **General**: `Makefile` / `Taskfile.yml`
 
-## Safety Directives
+## Safety & Craft Directives
 - **Headless Mode Always**: All browser interactions (Playwright, Puppeteer) MUST run in headless mode (`headless: true`).
+- **Zero-Emoji UI & Anti-AI-Slop**: Banned emojis as UI icons; use Lucide/Heroicons SVG. Banned purple gradient defaults; use Neutral Zinc `#09090b` (`anti-ai-slop-ui.md`).
+- **Autonomous Research**: Banned hallucinating APIs for unfamiliar/new libraries. Always research via `gh` CLI, `search_web`, or `scripts/inspect-package.ps1` before modifying code (`autonomous-research.md`).
 <!-- HARNESS:END -->

@@ -19,6 +19,12 @@
         "description": "Extracts explicit checklist for all prompt defects/goals and mandates subagent delegation for multi-part tasks",
         "action": "enforce_rule",
         "rule": "zero-drop-multi-goal.md"
+      },
+      {
+        "name": "autonomous-research-check",
+        "description": "Mandates researching unfamiliar libraries, new versions, or external repositories via GitHub/Web before editing code",
+        "action": "enforce_rule",
+        "rule": "autonomous-research.md"
       }
     ],
     "post_edit": [
@@ -39,6 +45,12 @@
         "description": "Enforces head/tail log truncation and diff delta minimization to prevent token bloat",
         "action": "enforce_rule",
         "rule": "context-pruning.md"
+      },
+      {
+        "name": "anti-ai-slop-ui-gate",
+        "description": "Enforces Zero-Emoji policy on UI icons, bans purple AI gradient slop, and mandates Lucide/Heroicons SVG components",
+        "action": "enforce_rule",
+        "rule": "anti-ai-slop-ui.md"
       }
     ],
     "pre_complete": [

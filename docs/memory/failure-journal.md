@@ -10,6 +10,7 @@
 
 | ID | Ngày | Triệu chứng lỗi (Symptoms) | Nguyên nhân gốc rễ (Root Cause) | Quy tắc phòng ngừa bất biến (Never Do Again) |
 |---|---|---|---|---|
+| `ERR-005` | 2026-10-29 | Agent sinh UI re tien voi emoji icon va tu bia dat API khi gap thu vien repo GitHub moi | Thieu luat cuong che Zero-Emoji trong UI va thieu quy trinh tu dong tra cuu docs/code mau qua GitHub CLI va Web Search truoc khi code | Cai dat luat anti-ai-slop-ui.md, autonomous-research.md va tich hop inspect-package.ps1 vao pre_task/post_edit hooks |
 | `ERR-004` | 2026-10-29 | Agent bo sot loi B trong prompt da muc tieu va chi test qua loa happy path roi bao cao xong som | Thieu ma tran phan ra muc tieu Turn 1, thieu rao chan kiem thu 3 tang (negative + full suite), va thieu su kiem tra cheo tu subagent QA | Ap dung luat zero-drop-multi-goal.md vao pre_task/pre_complete, bat buoc xuat Proof-of-Execution Matrix kem exit code 0 va trieu tap @qa khi gap task da loi |
 | `ERR-003` | 2026-10-29 | Agent ngung ghi failure-journal trong cac phien lam viec dai khi sua bug nghiem trong | Chi thi prompt bi suy giam chu y (Lost-in-the-Middle) khi context dai, thieu mechanical gate chan lenh git commit | Cai dat commit-msg hook tu dong block commit fix: neu thieu failure-journal.md, va them defect transition prompt vao verify.ps1 |
 | `ERR-002` | 2026-10-27 | Agent khong tu dong ghi kinh nghiem vao memory sau khi hoan thanh task | Thieu hook bat buoc trong pre_complete va thieu chi thi cuong che trong cac entrypoint AGENTS.md | Them luat auto-experience-journaling vao pre_complete va quy dinh trong 5 Guardrails Mandates bat buoc chay record-lesson truoc khi nghiem thu |
@@ -63,4 +64,12 @@ hoặc trên Linux/macOS:
 - **Symptom**: Agent bo sot loi B trong prompt da muc tieu va chi test qua loa happy path roi bao cao xong som
 - **Root Cause**: Thieu ma tran phan ra muc tieu Turn 1, thieu rao chan kiem thu 3 tang (negative + full suite), va thieu su kiem tra cheo tu subagent QA
 - **Prevention Rule**: Ap dung luat zero-drop-multi-goal.md vao pre_task/pre_complete, bat buoc xuat Proof-of-Execution Matrix kem exit code 0 va trieu tap @qa khi gap task da loi
+
+
+
+### `ERR-005`: Agent sinh UI re tien voi emoji icon va tu bia dat API khi gap thu vien repo GitHub moi
+- **Date**: 2026-10-29
+- **Symptom**: Agent sinh UI re tien voi emoji icon va tu bia dat API khi gap thu vien repo GitHub moi
+- **Root Cause**: Thieu luat cuong che Zero-Emoji trong UI va thieu quy trinh tu dong tra cuu docs/code mau qua GitHub CLI va Web Search truoc khi code
+- **Prevention Rule**: Cai dat luat anti-ai-slop-ui.md, autonomous-research.md va tich hop inspect-package.ps1 vao pre_task/post_edit hooks
 

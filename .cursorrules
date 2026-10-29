@@ -10,3 +10,5 @@ Read `AGENTS.md` and `docs/WORKFLOW.md` as primary authority.
 5. Durable Plans: Multi-step work belongs in `docs/plans/active/`.
 6. Auto-Experience Journaling: Append defect root-cause & lessons into `docs/memory/failure-journal.md` upon completion.
 7. Zero-Drop & Multi-Goal: Extract Goal Matrix for multi-issue prompts, run negative boundary tests, and verify full suite before reporting.
+8. Zero-Emoji UI: Never use emojis as icons; mandate Lucide/Heroicons SVG and high-end neutral zinc/slate palette.
+9. Autonomous Research: Never hallucinate APIs; inspect via `gh` CLI, `search_web`, or `scripts/inspect-package.ps1`.

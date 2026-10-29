@@ -40,6 +40,12 @@ Khi gặp lỗi giống hệt nhau 3 lần liên tiếp, Agent BẮT BUỘC DỪ
 ## 👤 Anti-AI Slop & Natural Senior Engineering Voice
 Tuyệt đối không dùng văn mẫu sáo rỗng AI (*delve, tapestry, crucial, testament, pivotal, beacon, unleash, paramount...*), triệt tiêu gạch ngang em-dash thừa, không hỏi tự trả lời (hypophora). Giao tiếp gãy gọn, sắc bén, trực diện như Kỹ sư trưởng (Staff/Principal Engineer). Chi tiết: `.agents/rules/human-identity-anti-slop.md`.
 
+## 🎨 Anti-AI Slop UI & Zero-Emoji Policy
+Nghiêm cấm tuyệt đối dùng Emoji làm icon trong giao diện (button, badge, card, nav). Bắt buộc dùng SVG Icon chuẩn công nghiệp (`lucide-react`, `@heroicons/react`). Cấm nền gradient tím rập khuôn (`from-purple-500 to-indigo-600`), ép dùng Design Tokens chuẩn (Neutral Zinc/Slate `#09090b`, viền `border-white/10`, text phân cấp `text-zinc-100` / `text-zinc-400`). Chi tiết: `.agents/rules/anti-ai-slop-ui.md`.
+
+## 🌐 Autonomous Web & GitHub Research Protocol
+Khi gặp thư viện mới, package mới cập nhật hoặc repo GitHub lạ: CẤM BỊA ĐẶT API. Bắt buộc tra cứu trước qua GitHub CLI (`gh repo view`, `gh search code`), Web Search (`search_web`) hoặc script `scripts/inspect-package.ps1` để lấy chữ ký hàm thật từ chính tác giả trước khi viết code. Chi tiết: `.agents/rules/autonomous-research.md`.
+
 ## 👥 Autonomous Department Scaling Protocol (Tự động mở rộng theo độ lớn task)
 Agent tự động phân tích độ lớn, phạm vi và rủi ro của Prompt để tự động kích hoạt phòng ban từ kho 68 roles tại `.agents/roles/`:
 - **Tier 1 (Task nhỏ / Cục bộ / 1 file đơn lẻ)**: Kích hoạt **Solo Dev (`@dev`)** làm nhanh theo TDD để tối ưu tốc độ và token.

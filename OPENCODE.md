@@ -14,5 +14,7 @@ Never modify code without authority or verified failing tests.
 
 ## Directives
 - Check `.agents/rules/` for mandatory gates and guardrails.
+- Zero-Emoji UI: Ban emojis as icons; use Lucide/Heroicons SVG (`anti-ai-slop-ui.md`).
+- Autonomous Research: Verify unfamiliar APIs via `gh` CLI/web before coding (`autonomous-research.md`).
 - Use `docs/templates/exec-plan.md` for durable multi-step tasks in `docs/plans/active/`.
 <!-- HARNESS:END -->

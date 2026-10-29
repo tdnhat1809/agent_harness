@@ -16,5 +16,7 @@ Read `docs/WORKFLOW.md` for task shapes and execution requirements.
 ## Standards
 - Task Lifecycle: Follow `.agents/rules/ecc-harness-gate.md`.
 - Active Plans: Store in `docs/plans/active/`.
+- UI Quality: Banned emojis as icons; use Lucide/Heroicons SVG (`anti-ai-slop-ui.md`).
+- Research Mandate: Research unfamiliar APIs via `gh` CLI/web before coding (`autonomous-research.md`).
 - Completed Plans: Move to `docs/plans/completed/`.
 <!-- HARNESS:END -->
