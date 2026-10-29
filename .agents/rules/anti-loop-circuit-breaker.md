@@ -10,6 +10,7 @@ When an automated task, test run, or compilation error fails 3 consecutive times
    - **Root Cause Isolation**: Result of binary search or trace analysis.
    - **Proposed Options**: 2-3 concrete paths forward (e.g., architectural change, dependency update, manual intervention required).
    - **Actionable Decision**: Ask the user to select or authorize the next path.
+4. **PERSIST FAILURE SIGNATURE**: Run `scripts/record-lesson.ps1` (or `record-lesson.sh`) to log the failure signature and failed hypotheses into `docs/memory/failure-journal.md` before halting. Never allow 3 failed attempts to vanish without permanent failure journal persistence.
 
 ## §2. ANTI-SPIN / TOKEN CONSERVATION MANDATE
 - Never loop more than 3 times on the same failing command.

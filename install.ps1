@@ -218,6 +218,7 @@ if (-not (Test-Path "$Target\.github\PULL_REQUEST_TEMPLATE.md")) { Copy-Item "$s
 if (Test-Path "$Target\.git\hooks") {
     Write-Host "[+] Installing Mechanical Git Hooks into $Target\.git\hooks..." -ForegroundColor Green
     Copy-Item "$sourceDir\scripts\git-hooks\pre-commit" "$Target\.git\hooks\pre-commit" -Force
+    Copy-Item "$sourceDir\scripts\git-hooks\commit-msg" "$Target\.git\hooks\commit-msg" -Force
     Copy-Item "$sourceDir\scripts\git-hooks\pre-push" "$Target\.git\hooks\pre-push" -Force
 }
 

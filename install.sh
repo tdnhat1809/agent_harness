@@ -174,8 +174,9 @@ merge_or_create "$SOURCE_DIR/OPENCODE.md" "$TARGET_DIR/OPENCODE.md" "OPENCODE.md
 if [ -d "$TARGET_DIR/.git/hooks" ]; then
     echo "[+] Installing Mechanical Git Hooks into $TARGET_DIR/.git/hooks..."
     cp -f "$SOURCE_DIR/scripts/git-hooks/pre-commit" "$TARGET_DIR/.git/hooks/pre-commit"
+    cp -f "$SOURCE_DIR/scripts/git-hooks/commit-msg" "$TARGET_DIR/.git/hooks/commit-msg"
     cp -f "$SOURCE_DIR/scripts/git-hooks/pre-push" "$TARGET_DIR/.git/hooks/pre-push"
-    chmod +x "$TARGET_DIR/.git/hooks/pre-commit" "$TARGET_DIR/.git/hooks/pre-push" 2>/dev/null || true
+    chmod +x "$TARGET_DIR/.git/hooks/pre-commit" "$TARGET_DIR/.git/hooks/commit-msg" "$TARGET_DIR/.git/hooks/pre-push" 2>/dev/null || true
 fi
 
 echo -e "\n========================================================"

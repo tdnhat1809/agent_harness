@@ -62,6 +62,7 @@ Check-File "docs\memory" "Persistent Memory (Failure Journal)"
 
 Write-Host "`n[5] Mechanical Git Hooks:" -ForegroundColor Yellow
 Check-File ".git\hooks\pre-commit" "Git Hook: pre-commit (TDD & Secret Shield)"
+Check-File ".git\hooks\commit-msg" "Git Hook: commit-msg (Failure Journal Enforcer)"
 Check-File ".git\hooks\pre-push" "Git Hook: pre-push (Remote Guard)"
 
 Write-Host "`n========================================================" -ForegroundColor Cyan

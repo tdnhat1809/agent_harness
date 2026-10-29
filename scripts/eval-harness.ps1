@@ -65,9 +65,9 @@ try {
 }
 
 # ------------------------------------------------------------------------------
-# Challenge 3: Anti-Blob & TDD Check Verification (25 pts)
+# Challenge 3: Anti-Blob, TDD & Mechanical Defect Gate Verification (25 pts)
 # ------------------------------------------------------------------------------
-Write-Host "`n[Challenge 3/4] Strict TDD Advisory & Anti-Blob Verification..." -ForegroundColor Yellow
+Write-Host "`n[Challenge 3/4] Strict TDD & Mechanical Defect Commit Gate..." -ForegroundColor Yellow
 $tempTestRepo2 = Join-Path $env:TEMP "harness_eval_tdd_test_$([Guid]::NewGuid().ToString('N').Substring(0,8))"
 
 try {
@@ -76,22 +76,39 @@ try {
     git -C $tempTestRepo2 config user.name "Eval Harness"
     git -C $tempTestRepo2 config user.email "eval@harness.local"
     Copy-Item "$rootDir\scripts\git-hooks\pre-commit" "$tempTestRepo2\.git\hooks\pre-commit" -Force
+    Copy-Item "$rootDir\scripts\git-hooks\commit-msg" "$tempTestRepo2\.git\hooks\commit-msg" -Force
 
-    # Create code file without test
+    # Test A: Create code file without test -> TDD check
     Set-Content -Path "$tempTestRepo2\service.py" -Value "def compute(): return 42"
     git -C $tempTestRepo2 add service.py
     
     Push-Location $tempTestRepo2
+    $tddOk = $false
     try {
         $hookOutput = & "C:\Program Files\Git\bin\bash.exe" ".git\hooks\pre-commit" 2>&1
         if ($hookOutput -match "TDD ADVISORY") {
-            Write-Host "  [PASS] Strict TDD guard correctly flagged missing test file (+25 pts)" -ForegroundColor Green
-            $score += 25
-        } else {
-            Write-Host "  [WARN] TDD advisory check did not match expected output: $hookOutput" -ForegroundColor DarkYellow
+            $tddOk = $true
         }
     } finally {
         Pop-Location
+    }
+
+    # Test B: Mechanical commit-msg gate blocking fix commit without failure-journal
+    $commitOut = git -C $tempTestRepo2 commit -m "fix: resolve critical null pointer exception" 2>&1
+    $fixBlocked = ($LASTEXITCODE -ne 0)
+
+    # Test C: Adding failure journal allows commit
+    New-Item -ItemType Directory -Path "$tempTestRepo2\docs\memory" -Force | Out-Null
+    Set-Content -Path "$tempTestRepo2\docs\memory\failure-journal.md" -Value "# Incident"
+    git -C $tempTestRepo2 add docs/memory/failure-journal.md
+    $commitOut2 = git -C $tempTestRepo2 commit -m "fix: resolve critical null pointer exception" 2>&1
+    $fixPassed = ($LASTEXITCODE -eq 0)
+
+    if ($tddOk -and $fixBlocked -and $fixPassed) {
+        Write-Host "  [PASS] Mechanical Defect Gate & TDD Guard verified (+25 pts)" -ForegroundColor Green
+        $score += 25
+    } else {
+        Write-Host "  [FAIL] Defect gate verification failed (tddOk=$tddOk, fixBlocked=$fixBlocked, fixPassed=$fixPassed)" -ForegroundColor Red
     }
 } finally {
     Remove-Item $tempTestRepo2 -Recurse -Force -ErrorAction SilentlyContinue

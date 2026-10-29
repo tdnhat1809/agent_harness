@@ -117,6 +117,8 @@ Khi cài đặt vào repo đích có Git, framework tự động thiết lập:
   - 🛑 **Secret Shield**: Quét phát hiện và chặn đứng commit nếu có tệp `.env`, `.pem`, `.key`, `id_rsa` hoặc API keys (`ghp_`, `sk-`, `AKIA...`).
   - 🛑 **Strict TDD Check**: Cảnh báo ngay nếu có code logic bị sửa đổi mà không có test tương ứng đi kèm.
   - 🛑 **Anti-Blob Shield**: Chặn các tệp binary rác (`.exe`, `.dll`, `.tar`, `.zip`, `.pyc`).
+- **`commit-msg` Hook (Defect Journal Enforcer)**:
+  - 🛑 **Failure Journal Gate**: Tự động chặn đứng bất kỳ commit sửa lỗi nào (`fix:`, `hotfix:`, `bug:`) nếu Agent chưa ghi nhận nguyên nhân gốc rễ và bài học vào `docs/memory/failure-journal.md`. Ép Agent bắt buộc phải chạy `record-lesson.ps1` mới được phép commit.
 - **`pre-push` Hook**: Kiểm tra trạng thái kế hoạch dài hạn (`docs/plans/active/`) trước khi đẩy code lên remote.
 
 ---

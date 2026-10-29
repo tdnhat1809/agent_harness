@@ -56,13 +56,26 @@ set -e
 END_TIME=$(date +%s)
 ELAPSED=$((END_TIME - START_TIME))
 
+DEFECT_MARKER="$SOURCE_DIR/.agents/.defect_active"
+
 echo "========================================================"
 if [ $EXIT_CODE -eq 0 ]; then
     echo "✅ [VERIFY SUCCESS] Tests PASSED in ${ELAPSED}s (Exit Code: 0)"
     echo "   Empirical evidence verified. Ready for sign-off."
+
+    if [ -f "$DEFECT_MARKER" ]; then
+        rm -f "$DEFECT_MARKER" 2>/dev/null || true
+        echo ""
+        echo "🔔 [HARNESS EXPERIENCE MANDATE] A previously failing test/defect has been resolved!"
+        echo "   Invariant 6 & Mandate 5 strictly require persisting the root cause and invariant lesson."
+        echo "   👉 RUN NOW: ./scripts/record-lesson.sh \"<symptom>\" \"<root-cause>\" \"<prevention>\""
+        echo "   Note: Git 'commit-msg' hook will mechanically REJECT any fix commit without failure-journal.md."
+        echo ""
+    fi
 else
     echo "❌ [VERIFY FAILURE] Tests FAILED in ${ELAPSED}s (Exit Code: $EXIT_CODE)"
     echo "   Strict Invariant Mandate: Fix root cause before claiming completion."
+    echo "FAIL|$(date +%s)|$COMMAND" > "$DEFECT_MARKER" 2>/dev/null || true
 fi
 echo "========================================================"
 

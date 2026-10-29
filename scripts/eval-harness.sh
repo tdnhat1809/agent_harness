@@ -45,16 +45,38 @@ else
     echo "  [FAIL] Secret Shield failed to block commit!"
 fi
 
-# Challenge 3: TDD Advisory Verification
-echo -e "\n[Challenge 3/4] Strict TDD Advisory & Anti-Blob Verification..."
+# Challenge 3: TDD Advisory & Mechanical Defect Commit Gate Verification
+echo -e "\n[Challenge 3/4] Strict TDD Advisory & Mechanical Defect Gate..."
+cp -f "$SOURCE_DIR/scripts/git-hooks/commit-msg" .git/hooks/commit-msg
+chmod +x .git/hooks/commit-msg 2>/dev/null || true
+
 echo "def compute(): return 42" > service.py
 git add service.py
 HOOK_OUT=$(.git/hooks/pre-commit 2>&1 || true)
+TDD_PASS=0
 if echo "$HOOK_OUT" | grep -q "TDD ADVISORY"; then
-    echo "  [PASS] Strict TDD guard correctly flagged missing test file (+25 pts)"
+    TDD_PASS=1
+fi
+
+set +e
+git commit -m "fix: resolve critical null pointer exception" >/dev/null 2>&1
+FIX_BLOCKED=$?
+set -e
+
+mkdir -p docs/memory
+echo "# Incident" > docs/memory/failure-journal.md
+git add docs/memory/failure-journal.md
+
+set +e
+git commit -m "fix: resolve critical null pointer exception" >/dev/null 2>&1
+FIX_PASSED=$?
+set -e
+
+if [ $TDD_PASS -eq 1 ] && [ $FIX_BLOCKED -ne 0 ] && [ $FIX_PASSED -eq 0 ]; then
+    echo "  [PASS] Mechanical Defect Gate & TDD Guard verified (+25 pts)"
     SCORE=$((SCORE + 25))
 else
-    echo "  [WARN] TDD advisory check did not match expected output."
+    echo "  [FAIL] Defect gate verification failed (tdd=$TDD_PASS, blocked=$FIX_BLOCKED, passed=$FIX_PASSED)"
 fi
 
 cd "$SOURCE_DIR"

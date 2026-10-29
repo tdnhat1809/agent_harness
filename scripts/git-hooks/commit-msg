@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# Agent Harness Mechanical Commit-Msg Gate
+# Enforces: Mandate 5 & Invariant 6 (Auto-Experience Journaling for Bug Fixes)
+# ==============================================================================
+
+COMMIT_MSG_FILE="$1"
+
+if [ -z "$COMMIT_MSG_FILE" ] || [ ! -f "$COMMIT_MSG_FILE" ]; then
+    exit 0
+fi
+
+# Read the first non-comment line of the commit message
+FIRST_LINE=$(grep -v '^#' "$COMMIT_MSG_FILE" | grep -v '^[[:space:]]*$' | head -n 1)
+
+# Check if commit is classified as a fix/defect repair
+FIX_REGEX='^(fix|hotfix|bug|patch|resolve)(\([a-zA-Z0-9_.-]+\))?!?:'
+
+if echo "$FIRST_LINE" | grep -E -q "$FIX_REGEX"; then
+    # Check if docs/memory/failure-journal.md is among the staged files
+    STAGED_JOURNAL=$(git diff --cached --name-only | grep -E '^docs/memory/failure-journal\.md$' || true)
+
+    if [ -z "$STAGED_JOURNAL" ]; then
+        echo ""
+        echo "❌ [FAILURE JOURNAL GATE REJECTED]"
+        echo "   Defect fix commit detected: \"$FIRST_LINE\""
+        echo "   However, 'docs/memory/failure-journal.md' was NOT updated in staged changes!"
+        echo ""
+        echo "   Invariant 6 & Guardrails Mandate 5 strictly require documenting the"
+        echo "   symptom, root cause, and invariant prevention rule for all bug fixes."
+        echo ""
+        echo "   Please record the lesson learned using:"
+        echo "     PowerShell: .\\scripts\\record-lesson.ps1 -Symptom \"<error>\" -RootCause \"<cause>\" -Prevention \"<rule>\""
+        echo "     Bash:       ./scripts/record-lesson.sh \"<symptom>\" \"<cause>\" \"<prevention>\""
+        echo ""
+        echo "   Then stage the journal file and retry:"
+        echo "     git add docs/memory/failure-journal.md"
+        echo "     git commit -m \"$FIRST_LINE\""
+        echo ""
+        exit 1
+    else
+        echo "✅ [Harness Guard] Defect fix commit paired with failure-journal update."
+    fi
+fi
+
+exit 0

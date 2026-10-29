@@ -88,12 +88,30 @@ Write-Host "-----------------------------------------------------`n" -Foreground
 
 # 4. Final Empirical Assessment
 Write-Host "========================================================" -ForegroundColor Cyan
+$defectMarker = "$PSScriptRoot\..\.agents\.defect_active"
+
 if ($exitCode -eq 0) {
     Write-Host "✅ [VERIFY SUCCESS] Tests PASSED in ${elapsed}s (Exit Code: 0)" -ForegroundColor Green
     Write-Host "   Empirical evidence verified. Ready for sign-off." -ForegroundColor Green
+
+    # Recency trigger: Alert agent if this run resolved a previously failing test
+    if (Test-Path $defectMarker) {
+        Remove-Item -Path $defectMarker -Force -ErrorAction SilentlyContinue
+        Write-Host ""
+        Write-Host "🔔 [HARNESS EXPERIENCE MANDATE] A previously failing test/defect has been resolved!" -ForegroundColor Magenta
+        Write-Host "   Invariant 6 & Mandate 5 strictly require persisting the root cause and invariant lesson." -ForegroundColor Yellow
+        Write-Host "   👉 RUN NOW: powershell -ExecutionPolicy Bypass -File .\scripts\record-lesson.ps1" -ForegroundColor Cyan
+        Write-Host "   Note: Git 'commit-msg' hook will mechanically REJECT any fix commit without failure-journal.md." -ForegroundColor DarkYellow
+        Write-Host ""
+    }
 } else {
     Write-Host "❌ [VERIFY FAILURE] Tests FAILED in ${elapsed}s (Exit Code: $exitCode)" -ForegroundColor Red
     Write-Host "   Strict Invariant Mandate: Fix root cause before claiming completion." -ForegroundColor Yellow
+
+    # Mark active defect for dynamic recency reminder
+    try {
+        Set-Content -Path $defectMarker -Value "FAIL|$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')|$Command" -Encoding UTF8 -ErrorAction SilentlyContinue
+    } catch {}
 }
 Write-Host "========================================================`n" -ForegroundColor Cyan
 

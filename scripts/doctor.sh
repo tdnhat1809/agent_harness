@@ -60,6 +60,7 @@ check_file "docs/memory" "Persistent Memory (Failure Journal)"
 
 echo -e "\n[5] Mechanical Git Hooks:"
 check_file ".git/hooks/pre-commit" "Git Hook: pre-commit (TDD & Secret Shield)"
+check_file ".git/hooks/commit-msg" "Git Hook: commit-msg (Failure Journal Enforcer)"
 check_file ".git/hooks/pre-push" "Git Hook: pre-push (Remote Guard)"
 
 echo -e "\n========================================================"
