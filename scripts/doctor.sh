@@ -74,6 +74,10 @@ check_file "scripts/inspect-package.sh" "Live Package Inspector (inspect-package
 check_file "scripts/query-memory.sh" "Semantic Memory Indexer (query-memory)"
 check_file "scripts/record-lesson.sh" "Failure Journal Recorder (record-lesson)"
 check_file "scripts/generate-pr.sh" "Automated PR Generator (generate-pr)"
+check_file "scripts/flaky-detector.sh" "Flaky Test Isolator & Bisection Engine (flaky-detector)"
+check_file "scripts/agent-debate.sh" "Multi-Agent Adversarial Debate Protocol (agent-debate)"
+check_file "scripts/token-telemetry.sh" "Live Token Telemetry & ROI Profiler (token-telemetry)"
+check_file "scripts/time-machine.sh" "Micro-Checkpoint Time Machine (time-machine)"
 
 echo -e "\n========================================================"
 echo -e "\033[32m   DIAGNOSIS COMPLETE! YOUR HARNESS IS PRODUCTION-READY \033[0m"

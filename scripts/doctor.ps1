@@ -76,6 +76,10 @@ Check-File "scripts\inspect-package.ps1" "Live Package Inspector (inspect-packag
 Check-File "scripts\query-memory.ps1" "Semantic Memory Indexer (query-memory)"
 Check-File "scripts\record-lesson.ps1" "Failure Journal Recorder (record-lesson)"
 Check-File "scripts\generate-pr.ps1" "Automated PR Generator (generate-pr)"
+Check-File "scripts\flaky-detector.ps1" "Flaky Test Isolator & Bisection Engine (flaky-detector)"
+Check-File "scripts\agent-debate.ps1" "Multi-Agent Adversarial Debate Protocol (agent-debate)"
+Check-File "scripts\token-telemetry.ps1" "Live Token Telemetry & ROI Profiler (token-telemetry)"
+Check-File "scripts\time-machine.ps1" "Micro-Checkpoint Time Machine (time-machine)"
 
 Write-Host "`n========================================================" -ForegroundColor Cyan
 Write-Host "   DIAGNOSIS COMPLETE! YOUR HARNESS IS PRODUCTION-READY " -ForegroundColor Green

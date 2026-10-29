@@ -8,6 +8,7 @@ node_modules/
 *.log
 scratch/
 tmp/
+.harness_snapshots/
 
 # Keep empty structure
 !docs/plans/active/.gitkeep

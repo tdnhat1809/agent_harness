@@ -140,6 +140,10 @@ Bộ harness tích hợp sẵn bộ CLI công cụ tiêu chuẩn giúp tăng t�
 | Công cụ | Lệnh thực thi (PowerShell / Bash) | Chức năng chính |
 |---|---|---|
 | **Dynamic Context Sharding** | `.\scripts\route-context.ps1` / `./scripts/route-context.sh` | Phân loại intent, chọn lọc rules và skills theo domain, loại bỏ 70-90% token rác chống loãng chú ý |
+| **Flaky Test Isolator** | `.\scripts\flaky-detector.ps1` / `./scripts/flaky-detector.sh` | Chạy lặp kiểm thử đo flake rate, cô lập test chập chờn vào quarantined-tests.md chống loop vô tận |
+| **Multi-Agent Debate Protocol** | `.\scripts\agent-debate.ps1` / `./scripts/agent-debate.sh` | Tranh luận đối kháng 3 bên (@dev, @security/@qa, @lead) triệt tiêu thiên kiến xác nhận trước khi merge |
+| **Token Telemetry & ROI Profiler** | `.\scripts\token-telemetry.ps1` / `./scripts/token-telemetry.sh` | Giám sát token, tính chi phí đa mô hình (Claude, GPT, Gemini), đo điểm hội tụ và kiểm soát ngân sách |
+| **Micro-Checkpoint Time Machine** | `.\scripts\time-machine.ps1` / `./scripts/time-machine.sh` | Snapshot vi mô và tua ngược trạng thái code theo từng bước, bảo toàn docs/memory và active plans |
 | **Visual UI & Anti-AI Slop Auditor** | `.\scripts\ui-audit.ps1` / `./scripts/ui-audit.sh` | Kiểm định UI component bắt lỗi icon emoji, gradient tím và kiểm tra khả năng tiếp cận WCAG (a11y) |
 | **Ephemeral Sandbox Runner** | `.\scripts\sandbox-run.ps1` / `./scripts/sandbox-run.sh` | Chạy lệnh trong container Docker cô lập hoặc ephemeral snapshot chống tác động máy host |
 | **Agent Red-Team Benchmark** | `.\scripts\test-agent-adherence.ps1` / `./scripts/test-agent-adherence.sh` | Bộ 6 thử thách sát hạch bẫy hành vi: chống rớt mục tiêu, chống leak secret, chống slop UI, ép failure journal |
