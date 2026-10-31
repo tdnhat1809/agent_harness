@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trình Tạo Workflow Tự Động Hóa Thiết Bị (HC BOX)</title>
+  <style>
+    :root {
+      --bg-dark: #09090b;
+      --bg-panel: #121215;
+      --bg-card: #18181b;
+      --bg-card-hover: #222226;
+      --bg-active: #27272a;
+      --border: #27272a;
+      --border-focus: #3b82f6;
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --accent-blue: #3b82f6;
+      --accent-emerald: #10b981;
+      --accent-rose: #ef4444;
+      --accent-amber: #f59e0b;
+      --accent-indigo: #6366f1;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      user-select: none;
+    }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      font-size: 13px;
+    }
+
+    /* SVG Utility */
+    .icon {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+
+    /* Header Toolbar */
+    .header {
+      height: 52px;
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      gap: 12px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-primary);
+      padding-right: 12px;
+      border-right: 1px solid var(--border);
+    }
+
+    .wf-name-input {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      width: 220px;
+      outline: none;
+      user-select: text;
+    }
+    .wf-name-input:focus {
+      border-color: var(--accent-blue);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 500;
+      background: rgba(113, 113, 122, 0.2);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .status-badge.running {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+    .status-badge.error {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .status-badge.running .pulse-dot {
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(1.3); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      transition: all 0.15s ease;
+    }
+    .btn:hover {
+      background: var(--bg-card-hover);
+      border-color: #3f3f46;
+    }
+    .btn-primary {
+      background: #15803d;
+      border-color: var(--accent-emerald);
+      color: #ffffff;
+    }
+    .btn-primary:hover {
+      background: #16a34a;
+    }
+    .btn-danger {
+      background: #991b1b;
+      border-color: var(--accent-rose);
+      color: #ffffff;
+    }
+    .btn-danger:hover {
+      background: #b91c1c;
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Main Container (3 Panels) */
+    .main-body {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* 1. Left Sidebar: Component Palette */
+    .palette-sidebar {
+      width: 250px;
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .panel-header {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .palette-content {
+      padding: 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .palette-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-top: 6px;
+      margin-bottom: 2px;
+      text-transform: uppercase;
+    }
+
+    .palette-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: grab;
+      transition: all 0.15s ease;
+    }
+    .palette-item:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-blue);
+      transform: translateX(2px);
+    }
+    .palette-item:active {
+      cursor: grabbing;
+    }
+
+    .palette-item-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--accent-blue);
+    }
+    .palette-item.swipe .palette-item-icon { background: rgba(16, 185, 129, 0.1); color: var(--accent-emerald); }
+    .palette-item.key .palette-item-icon { background: rgba(245, 158, 11, 0.1); color: var(--accent-amber); }
+    .palette-item.text .palette-item-icon { background: rgba(99, 102, 241, 0.1); color: var(--accent-indigo); }
+    .palette-item.delay .palette-item-icon { background: rgba(168, 85, 247, 0.1); color: #c084fc; }
+    .palette-item.app .palette-item-icon { background: rgba(14, 165, 233, 0.1); color: #38bdf8; }
+    .palette-item.shell .palette-item-icon { background: rgba(244, 63, 94, 0.1); color: #fb7185; }
+
+    .palette-item-info {
+      flex: 1;
+    }
+    .palette-item-title {
+      font-weight: 500;
+      font-size: 12px;
+      color: var(--text-primary);
+    }
+    .palette-item-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* 2. Middle Canvas: Flow Pipeline */
+    .flow-canvas {
+      flex: 1;
+      background: var(--bg-dark);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .canvas-toolbar {
+      padding: 8px 16px;
+      background: rgba(18, 18, 21, 0.6);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .canvas-stats {
+      color: var(--text-secondary);
+      font-size: 12px;
+      display: flex;
+      gap: 16px;
+    }
+
+    .canvas-steps-container {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Empty State */
+    .empty-state {
+      margin-top: 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 48px;
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      background: rgba(24, 24, 27, 0.4);
+    }
+    .empty-state-icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 12px;
+      stroke: var(--text-muted);
+    }
+    .empty-state-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+    .empty-state-desc {
+      font-size: 12px;
+      max-width: 320px;
+      line-height: 1.5;
+    }
+
+    /* Flow Step Card */
+    .step-card {
+      width: 100%;
+      max-width: 580px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .step-card:hover {
+      border-color: #3f3f46;
+      background: var(--bg-card-hover);
+    }
+    .step-card.selected {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 1px var(--accent-blue);
+    }
+    .step-card.active-running {
+      border-color: var(--accent-emerald) !important;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.5) !important;
+      background: rgba(16, 185, 129, 0.08);
+    }
+    .step-card.disabled {
+      opacity: 0.5;
+      background: #141416;
+    }
+    .step-card.dragging {
+      opacity: 0.4;
+      border-style: dashed;
+    }
+    .step-card.drag-over {
+      border-top: 2px solid var(--accent-blue);
+    }
+
+    .step-card-header {
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .drag-handle {
+      color: var(--text-muted);
+      cursor: grab;
+      display: flex;
+      align-items: center;
+    }
+    .drag-handle:active {
+      cursor: grabbing;
+    }
+
+    .step-index-badge {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step-type-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .type-tap { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    .type-swipe { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .type-type_text { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
+    .type-key { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .type-delay { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
+    .type-launch_app { background: rgba(14, 165, 233, 0.15); color: #38bdf8; }
+    .type-stop_app { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+    .type-shell { background: rgba(244, 63, 94, 0.15); color: #fb7185; }
+
+    .step-label {
+      flex: 1;
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .step-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .icon-btn:hover {
+      background: var(--bg-panel);
+      color: var(--text-primary);
+    }
+    .icon-btn.danger:hover {
+      color: var(--accent-rose);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .step-card-body {
+      padding: 8px 12px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    .param-chip {
+      background: var(--bg-panel);
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      font-family: monospace;
+      font-size: 11px;
+      color: #d4d4d8;
+    }
+
+    .connector-line {
+      width: 2px;
+      height: 14px;
+      background: var(--border);
+    }
+
+    /* 3. Right Sidebar: Inspector */
+    .inspector-sidebar {
+      width: 320px;
+      background: var(--bg-panel);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .inspector-content {
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      user-select: text;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 7px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      outline: none;
+      width: 100%;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--accent-blue);
+    }
+    .form-textarea {
+      resize: vertical;
+      min-height: 54px;
+      font-family: monospace;
+    }
+
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--text-secondary);
+      user-select: none;
+    }
+
+    .collapsible-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--text-primary);
+    }
+
+    /* 4. Bottom Log Drawer */
+    .log-drawer {
+      height: 140px;
+      background: var(--bg-panel);
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .log-drawer.collapsed {
+      height: 32px;
+    }
+
+    .log-header {
+      height: 32px;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-panel);
+      cursor: pointer;
+    }
+
+    .log-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .log-container {
+      flex: 1;
+      background: #09090b;
+      padding: 8px 14px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 11px;
+      line-height: 1.6;
+      color: #a1a1aa;
+      user-select: text;
+    }
+    .log-line {
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .log-line.warn { color: var(--accent-amber); }
+    .log-line.error { color: var(--accent-rose); }
+    .log-line.success { color: var(--accent-emerald); }
+
+    /* Dropdown Modal for Templates */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(2px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-overlay.open {
+      display: flex;
+    }
+    .modal {
+      width: 480px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .modal-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .modal-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .template-card {
+      padding: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .template-card:hover {
+      border-color: var(--accent-blue);
+      background: var(--bg-card-hover);
+    }
+    .template-title {
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .template-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation & Execution Toolbar -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo-badge">
+        <svg class="icon" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+        <span>Workflow Auto</span>
+      </div>
+      <input type="text" id="wfNameInput" class="wf-name-input" value="Workflow Kịch Bản Mới" placeholder="Tên kịch bản..." title="Tên kịch bản">
+
+      <div id="statusBadge" class="status-badge">
+        <span class="pulse-dot"></span>
+        <span id="statusText">Sẵn sàng</span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn" id="btnTemplates" title="Mở danh sách kịch bản mẫu có sẵn">
+        <svg class="icon" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18M9 21V9"></path></svg>
+        <span>Kịch Bản Mẫu</span>
+      </button>
+
+      <button class="btn" id="btnExport" title="Xuất kịch bản thành file JSON">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        <span>Xuất JSON</span>
+      </button>
+
+      <button class="btn" id="btnImport" title="Nhập kịch bản từ file JSON">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        <span>Nhập JSON</span>
+      </button>
+      <input type="file" id="fileInput" accept=".json" style="display:none">
+
+      <button class="btn btn-danger" id="btnStop" disabled title="Dừng kịch bản đang chạy">
+        <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
+        <span>Dừng</span>
+      </button>
+
+      <button class="btn btn-primary" id="btnRun" title="Khởi chạy kịch bản trên các máy đã chọn">
+        <svg class="icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        <span>Chạy Kịch Bản</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 3-Panel Main Studio -->
+  <div class="main-body">
+
+    <!-- 1. Left Component Palette -->
+    <aside class="palette-sidebar">
+      <div class="panel-header">
+        <span>Thư Viện Thao Tác</span>
+      </div>
+      <div class="palette-content">
+        <div class="palette-section-title">Tương Tác Cảm Ứng</div>
+
+        <div class="palette-item" draggable="true" data-type="tap">
+          <div class="palette-item-icon">
+            <svg class="icon" viewBox="0 0 24 24"><path d="m9 9 5 12 1.774-5.226L21 14 9 9z"></path><path d="m16.071 16.071 4.243 4.243"></path></svg>
+          </div>
+          <div class="palette-item-info">
+            <div class="palette-item-title">Chạm / Click</div>
+            <div class="palette-item-desc">Nhấp tọa độ X, Y trên màn</div>
+          </div>
+        </div>
+
+        <div class="palette-item swipe" draggable="true" data-type="swipe">
+          <div class="palette-item-icon">
+            <svg class="icon" viewBox="0 0 24 24"><polyline points="5 9 2 12 5 15"></polyline><polyline points="9 5 12 2 15 5"></polyline><polyline points="15 19 12 22 9 19"></polyline><polyline points="19 9 22 12 19 15"></polyline><line x1="2" y1="12" x2="22" y2="12"></line><line x1="12" y1="2" x2="12" y2="22"></line></svg>
+          </div>
+          <div class="palette-item-info">
+            <div class="palette-item-title">Vuốt Màn Hình</div>
+            <div class="palette-item-desc">Vuốt lên, xuống, trái, phải</div>
+          </div>
+        </div>
+
+        <div class="palette-section-title">Nhập Liệu & Phím Cứng</div>
+
+        <div class="palette-item text" draggable="true" data-type="type_text">
+          <div class="palette-item-icon">
+            <svg class="icon" viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+          </div>
+          <div class="palette-item-info">
+            <div class="palette-item-title">Gõ Văn Bản</div>
+            <div class="palette-item-desc">Nhập chữ, link, số điện thoại</div>
+          </div>
+        </div>
+
+        <div class="palette-item key" draggable="true" data-type="key">
+          <div class="palette-item-icon">
+            <svg class="icon" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="M6 8h.001M10 8h.001M14 8h.001M18 8h.001M8 12h.001M12 12h.001M16 12h.001M7 16h10"></path></svg>
+          </div>
+          <div class="palette-item-info">
+            <div class="palette-item-title">Phím Hệ Thống</div>
+            <div class="palette-item-desc">Home, Back, Recents, Power</div>
+          </div>
+        </div>
+
+        <div class="palette-section-title">Điều Khiển Luồng</div>
+
+        <div class="palette-item delay" draggable="true" data-type="delay">
+          <div class="palette-item-icon">
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          </div>
+          <div class="palette-item-info">
+            <div class="palette-item-title">Tạm Dừng / Chờ</div>
+            <div class="palette-item-desc">Chờ cố định hoặc ngẫu nhiên</div>
+          </div>
+        </div>
+
+        <div class="palette-section-title">Quản Lý Ứng Dụng & ADB</div>
+
+        <div class="palette-item app" draggable="true" data-type="launch_app">
+          <div class="palette-item-icon">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg>
+          </div>
+          <div class="palette-item-info">
+            <div class="palette-item-title">Mở Ứng Dụng</div>
+            <div class="palette-item-desc">Khởi chạy theo Package Name</div>
+          </div>
+        </div>
+
+        <div class="palette-item app" draggable="true" data-type="stop_app">
+          <div class="palette-item-icon">
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="m4.9 4.9 14.2 14.2"></path></svg>
+          </div>
+          <div class="palette-item-info">
+            <div class="palette-item-title">Buộc Dừng App</div>
+            <div class="palette-item-desc">Đóng ứng dụng theo Package</div>
+          </div>
+        </div>
+
+        <div class="palette-item shell" draggable="true" data-type="shell">
+          <div class="palette-item-icon">
+            <svg class="icon" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+          </div>
+          <div class="palette-item-info">
+            <div class="palette-item-title">Lệnh ADB Shell</div>
+            <div class="palette-item-desc">Chạy lệnh shell cấp thấp</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 2. Middle Canvas -->
+    <main class="flow-canvas" id="canvasDropZone">
+      <div class="canvas-toolbar">
+        <div class="canvas-stats">
+          <span>Tổng số bước: <strong id="stepCount">0</strong></span>
+          <span>Ước tính thời gian: <strong id="estTime">0s</strong></span>
+        </div>
+        <button class="btn" id="btnClearWorkflow" title="Xóa toàn bộ các bước">
+          <svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          <span>Làm Mới</span>
+        </button>
+      </div>
+
+      <div class="canvas-steps-container" id="stepsList">
+        <!-- Rendered dynamically -->
+      </div>
+    </main>
+
+    <!-- 3. Right Property Inspector -->
+    <aside class="inspector-sidebar">
+      <div class="panel-header">
+        <span id="inspectorTitle">Cấu Hình Kịch Bản</span>
+      </div>
+
+      <div class="inspector-content" id="inspectorContent">
+        <!-- Injected dynamically: Workflow Global settings OR Step Node settings -->
+      </div>
+    </aside>
+  </div>
+
+  <!-- 4. Bottom Log Terminal -->
+  <section class="log-drawer" id="logDrawer">
+    <div class="log-header" id="logToggle">
+      <div class="log-title">
+        <svg class="icon" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+        <span>Nhật Ký Thực Thi Thời Gian Thực</span>
+      </div>
+      <button class="icon-btn" id="btnClearLogs" title="Xóa log">
+        <svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+      </button>
+    </div>
+    <div class="log-container" id="logContainer">
+      <div class="log-line">Hệ thống Workflow sẵn sàng. Kéo thả các node chức năng từ cột trái vào giữa để bắt đầu...</div>
+    </div>
+  </section>
+
+  <!-- Template Selector Modal -->
+  <div class="modal-overlay" id="templateModal">
+    <div class="modal">
+      <div class="modal-header">
+        <span>Chọn Kịch Bản Mẫu Có Sẵn</span>
+        <button class="icon-btn" id="btnCloseModal">
+          <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body" id="templateList">
+        <!-- Injected via API -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State Management
+    const state = {
+      workflow: {
+        id: 'wf_' + Date.now(),
+        name: 'Workflow Kịch Bản Mới',
+        description: 'Kịch bản tự động hóa điều khiển thiết bị Android',
+        loopCount: 1,
+        loopDelayMs: 500,
+        targetDevices: [],
+        nodes: []
+      },
+      selectedNodeId: null,
+      onlineDevices: [],
+      isRunning: false,
+      currentStep: 0,
+      currentLoop: 1,
+      currentNodeId: null,
+      draggedIndex: null
+    };
+
+    // Predefined App Presets
+    const APP_PRESETS = [
+      { name: 'TikTok', pkg: 'com.zhiliaoapp.musically' },
+      { name: 'Google Chrome', pkg: 'com.android.chrome' },
+      { name: 'Facebook', pkg: 'com.facebook.katana' },
+      { name: 'YouTube', pkg: 'com.google.android.youtube' },
+      { name: 'Cài Đặt Hệ Thống', pkg: 'com.android.settings' }
+    ];
+
+    // Default Node Factory
+    function createDefaultNode(type) {
+      const id = 'step_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+      switch (type) {
+        case 'tap':
+          return {
+            id,
+            type,
+            label: 'Chạm Màn Hình',
+            params: { x: 0.5, y: 0.5, randomJitter: true }
+          };
+        case 'swipe':
+          return {
+            id,
+            type,
+            label: 'Vuốt Màn Hình',
+            params: { direction: 'up', durationMs: 250 }
+          };
+        case 'type_text':
+          return {
+            id,
+            type,
+            label: 'Gõ Văn Bản',
+            params: { text: 'https://google.com' }
+          };
+        case 'key':
+          return {
+            id,
+            type,
+            label: 'Phím Hệ Thống',
+            params: { keyAction: 'home' }
+          };
+        case 'delay':
+          return {
+            id,
+            type,
+            label: 'Chờ Đợi',
+            params: { durationMs: 2000, minDelayMs: 0, maxDelayMs: 0 }
+          };
+        case 'launch_app':
+          return {
+            id,
+            type,
+            label: 'Mở Ứng Dụng',
+            params: { packageName: 'com.zhiliaoapp.musically' }
+          };
+        case 'stop_app':
+          return {
+            id,
+            type,
+            label: 'Đóng Ứng Dụng',
+            params: { packageName: 'com.zhiliaoapp.musically' }
+          };
+        case 'shell':
+          return {
+            id,
+            type,
+            label: 'Lệnh Shell ADB',
+            params: { shellCmd: 'input keyevent 3' }
+          };
+        default:
+          return { id, type, label: 'Thao Tác ' + type, params: {} };
+      }
+    }
+
+    // Init & Event Listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      setupPaletteDrag();
+      setupCanvasDrop();
+      setupToolbarEvents();
+      fetchDevices();
+      renderCanvas();
+      renderInspector();
+
+      // Poll Engine Status & Logs periodically
+      setInterval(pollEngineStatus, 1000);
+      setInterval(fetchDevices, 4000);
+    });
+
+    // 1. Palette Dragging
+    function setupPaletteDrag() {
+      document.querySelectorAll('.palette-item').forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', item.dataset.type);
+          e.dataTransfer.effectAllowed = 'copy';
+        });
+      });
+    }
+
+    // 2. Canvas Dropping
+    function setupCanvasDrop() {
+      const dropZone = document.getElementById('canvasDropZone');
+
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+      });
+
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const type = e.dataTransfer.getData('text/plain');
+        if (type) {
+          const newNode = createDefaultNode(type);
+          state.workflow.nodes.push(newNode);
+          state.selectedNodeId = newNode.id;
+          renderCanvas();
+          renderInspector();
+          appendLog(`Đã thêm bước mới: [${type}] ${newNode.label}`);
+        }
+      });
+    }
+
+    // 3. Render Canvas Steps
+    function renderCanvas() {
+      const list = document.getElementById('stepsList');
+      const countEl = document.getElementById('stepCount');
+      const estTimeEl = document.getElementById('estTime');
+
+      countEl.innerText = state.workflow.nodes.length;
+
+      // Calculate estimated time
+      let totalMs = 0;
+      state.workflow.nodes.forEach(n => {
+        if (!n.disabled) {
+          if (n.type === 'delay') {
+            totalMs += (n.params.durationMs || ((n.params.minDelayMs + n.params.maxDelayMs) / 2) || 0);
+          } else if (n.type === 'swipe') {
+            totalMs += (n.params.durationMs || 250);
+          } else {
+            totalMs += 100;
+          }
+        }
+      });
+      const loops = state.workflow.loopCount > 0 ? state.workflow.loopCount : 1;
+      const totalSec = Math.round((totalMs * loops) / 1000);
+      estTimeEl.innerText = totalSec + 's';
+
+      if (state.workflow.nodes.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <svg class="empty-state-icon" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+            <div class="empty-state-title">Chưa có bước thực thi nào</div>
+            <div class="empty-state-desc">Hãy kéo thả các thẻ thao tác từ thanh bên trái vào đây để xây dựng quy trình tự động.</div>
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = '';
+      state.workflow.nodes.forEach((node, index) => {
+        if (index > 0) {
+          const conn = document.createElement('div');
+          conn.className = 'connector-line';
+          list.appendChild(conn);
+        }
+
+        const card = document.createElement('div');
+        const isSelected = state.selectedNodeId === node.id;
+        const isRunningStep = state.isRunning && state.currentNodeId === node.id;
+
+        card.className = `step-card ${isSelected ? 'selected' : ''} ${isRunningStep ? 'active-running' : ''} ${node.disabled ? 'disabled' : ''}`;
+        card.draggable = true;
+        card.dataset.index = index;
+
+        // Param summary text
+        let paramPreview = '';
+        if (node.type === 'tap') paramPreview = `X: ${node.params.x}, Y: ${node.params.y} ${node.params.randomJitter ? '(Random Jitter)' : ''}`;
+        else if (node.type === 'swipe') paramPreview = `Hướng: ${node.params.direction.toUpperCase()} (${node.params.durationMs || 250}ms)`;
+        else if (node.type === 'type_text') paramPreview = `"${node.params.text || ''}"`;
+        else if (node.type === 'key') paramPreview = `Phím: ${(node.params.keyAction || '').toUpperCase()}`;
+        else if (node.type === 'delay') {
+          paramPreview = node.params.minDelayMs > 0 ? `Chờ ngẫu nhiên: ${node.params.minDelayMs}-${node.params.maxDelayMs}ms` : `Chờ: ${node.params.durationMs}ms`;
+        }
+        else if (node.type === 'launch_app' || node.type === 'stop_app') paramPreview = `Package: ${node.params.packageName || ''}`;
+        else if (node.type === 'shell') paramPreview = `CMD: ${node.params.shellCmd || ''}`;
+
+        card.innerHTML = `
+          <div class="step-card-header">
+            <div class="drag-handle" title="Kéo để đổi thứ tự bước">
+              <svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg>
+            </div>
+            <div class="step-index-badge">${index + 1}</div>
+            <span class="step-type-pill type-${node.type}">${node.type.replace('_', ' ')}</span>
+            <span class="step-label">${escapeHtml(node.label)}</span>
+            <div class="step-card-actions">
+              <button class="icon-btn toggle-disable" title="${node.disabled ? 'Bật bước' : 'Tắt bước'}">
+                <svg class="icon" viewBox="0 0 24 24">${node.disabled ? '<circle cx="12" cy="12" r="10"></circle><path d="m4.9 4.9 14.2 14.2"></path>' : '<path d="M2 12h20"></path><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"></path><path d="M12 2v10"></path>'}</svg>
+              </button>
+              <button class="icon-btn btn-duplicate" title="Nhân bản bước">
+                <svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
+              <button class="icon-btn danger btn-delete" title="Xóa bước">
+                <svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              </button>
+            </div>
+          </div>
+          <div class="step-card-body">
+            <span class="param-chip">${escapeHtml(paramPreview)}</span>
+          </div>
+        `;
+
+        // Card Click Selection
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('.icon-btn')) return;
+          state.selectedNodeId = node.id;
+          renderCanvas();
+          renderInspector();
+        });
+
+        // Toggle Disable
+        card.querySelector('.toggle-disable').addEventListener('click', (e) => {
+          e.stopPropagation();
+          node.disabled = !node.disabled;
+          renderCanvas();
+          renderInspector();
+        });
+
+        // Duplicate
+        card.querySelector('.btn-duplicate').addEventListener('click', (e) => {
+          e.stopPropagation();
+          const clone = JSON.parse(JSON.stringify(node));
+          clone.id = 'step_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+          clone.label += ' (Bản sao)';
+          state.workflow.nodes.splice(index + 1, 0, clone);
+          state.selectedNodeId = clone.id;
+          renderCanvas();
+          renderInspector();
+        });
+
+        // Delete
+        card.querySelector('.btn-delete').addEventListener('click', (e) => {
+          e.stopPropagation();
+          state.workflow.nodes.splice(index, 1);
+          if (state.selectedNodeId === node.id) {
+            state.selectedNodeId = null;
+          }
+          renderCanvas();
+          renderInspector();
+        });
+
+        // Drag & Drop Reordering
+        card.addEventListener('dragstart', (e) => {
+          state.draggedIndex = index;
+          card.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+        });
+
+        card.addEventListener('dragend', () => {
+          card.classList.remove('dragging');
+          document.querySelectorAll('.step-card').forEach(c => c.classList.remove('drag-over'));
+        });
+
+        card.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          card.classList.add('drag-over');
+        });
+
+        card.addEventListener('dragleave', () => {
+          card.classList.remove('drag-over');
+        });
+
+        card.addEventListener('drop', (e) => {
+          e.preventDefault();
+          card.classList.remove('drag-over');
+          const targetIndex = index;
+          if (state.draggedIndex !== null && state.draggedIndex !== targetIndex) {
+            const moved = state.workflow.nodes.splice(state.draggedIndex, 1)[0];
+            state.workflow.nodes.splice(targetIndex, 0, moved);
+            state.draggedIndex = null;
+            renderCanvas();
+          }
+        });
+
+        list.appendChild(card);
+      });
+    }
+
+    // 4. Render Inspector (Right Panel)
+    function renderInspector() {
+      const titleEl = document.getElementById('inspectorTitle');
+      const container = document.getElementById('inspectorContent');
+      const node = state.workflow.nodes.find(n => n.id === state.selectedNodeId);
+
+      // If no node selected, show Workflow Global Settings
+      if (!node) {
+        titleEl.innerText = 'Cấu Hình Chung Workflow';
+        let deviceOptions = `<option value="">Tất cả thiết bị đang kết nối (${state.onlineDevices.length})</option>`;
+        state.onlineDevices.forEach(d => {
+          const selected = (state.workflow.targetDevices || []).includes(d.udid) ? 'selected' : '';
+          deviceOptions += `<option value="${d.udid}" ${selected}>${escapeHtml(d.name)} (${d.udid})</option>`;
+        });
+
+        container.innerHTML = `
+          <div class="form-group">
+            <label class="form-label">Tên Kịch Bản</label>
+            <input type="text" class="form-input" id="wfNameField" value="${escapeHtml(state.workflow.name)}">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Mô Tả</label>
+            <textarea class="form-textarea" id="wfDescField">${escapeHtml(state.workflow.description || '')}</textarea>
+          </div>
+
+          <div class="row-2">
+            <div class="form-group">
+              <label class="form-label">Số Lần Lặp (Loops)</label>
+              <input type="number" class="form-input" id="wfLoopsField" min="1" max="999" value="${state.workflow.loopCount || 1}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Chờ Giữa Vòng (ms)</label>
+              <input type="number" class="form-input" id="wfLoopDelayField" min="0" step="100" value="${state.workflow.loopDelayMs || 500}">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Thiết Bị Mục Tiêu</label>
+            <select class="form-select" id="wfDeviceField">
+              ${deviceOptions}
+            </select>
+          </div>
+        `;
+
+        document.getElementById('wfNameField').addEventListener('input', (e) => {
+          state.workflow.name = e.target.value;
+          document.getElementById('wfNameInput').value = e.target.value;
+        });
+        document.getElementById('wfDescField').addEventListener('input', (e) => {
+          state.workflow.description = e.target.value;
+        });
+        document.getElementById('wfLoopsField').addEventListener('input', (e) => {
+          state.workflow.loopCount = parseInt(e.target.value) || 1;
+          renderCanvas();
+        });
+        document.getElementById('wfLoopDelayField').addEventListener('input', (e) => {
+          state.workflow.loopDelayMs = parseInt(e.target.value) || 0;
+        });
+        document.getElementById('wfDeviceField').addEventListener('change', (e) => {
+          state.workflow.targetDevices = e.target.value ? [e.target.value] : [];
+        });
+        return;
+      }
+
+      // If a node is selected, show Node Inspector
+      titleEl.innerText = `Cấu Hình: ${node.type.toUpperCase()}`;
+
+      let paramFields = '';
+      if (node.type === 'tap') {
+        paramFields = `
+          <div class="row-2">
+            <div class="form-group">
+              <label class="form-label">Tọa Độ X (0.0 - 1.0)</label>
+              <input type="number" step="0.01" min="0" max="1" class="form-input param-field" data-prop="x" value="${node.params.x ?? 0.5}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tọa Độ Y (0.0 - 1.0)</label>
+              <input type="number" step="0.01" min="0" max="1" class="form-input param-field" data-prop="y" value="${node.params.y ?? 0.5}">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input type="checkbox" class="param-checkbox" data-prop="randomJitter" ${node.params.randomJitter ? 'checked' : ''}>
+              <span>Ngẫu nhiên tọa độ ±1% (Jitter chống quét hành vi)</span>
+            </label>
+          </div>
+        `;
+      } else if (node.type === 'swipe') {
+        paramFields = `
+          <div class="form-group">
+            <label class="form-label">Hướng Vuốt</label>
+            <select class="form-select param-field" data-prop="direction">
+              <option value="up" ${node.params.direction === 'up' ? 'selected' : ''}>Lên Trên (Up)</option>
+              <option value="down" ${node.params.direction === 'down' ? 'selected' : ''}>Xuống Dưới (Down)</option>
+              <option value="left" ${node.params.direction === 'left' ? 'selected' : ''}>Sang Trái (Left)</option>
+              <option value="right" ${node.params.direction === 'right' ? 'selected' : ''}>Sang Phải (Right)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Thời Gian Vuốt (ms)</label>
+            <input type="number" step="50" min="100" class="form-input param-field" data-prop="durationMs" value="${node.params.durationMs || 250}">
+          </div>
+        `;
+      } else if (node.type === 'type_text') {
+        paramFields = `
+          <div class="form-group">
+            <label class="form-label">Nội Dung Văn Bản Cần Nhập</label>
+            <textarea class="form-textarea param-field" data-prop="text">${escapeHtml(node.params.text || '')}</textarea>
+          </div>
+        `;
+      } else if (node.type === 'key') {
+        paramFields = `
+          <div class="form-group">
+            <label class="form-label">Phím Thao Tác</label>
+            <select class="form-select param-field" data-prop="keyAction">
+              <option value="home" ${node.params.keyAction === 'home' ? 'selected' : ''}>Màn Hình Chính (Home)</option>
+              <option value="back" ${node.params.keyAction === 'back' ? 'selected' : ''}>Quay Lại (Back)</option>
+              <option value="app_switch" ${node.params.keyAction === 'app_switch' ? 'selected' : ''}>Đa Nhiệm (Recents)</option>
+              <option value="power" ${node.params.keyAction === 'power' ? 'selected' : ''}>Bật/Tắt Màn Hình (Power)</option>
+              <option value="enter" ${node.params.keyAction === 'enter' ? 'selected' : ''}>Nhấn Enter / Gửi</option>
+              <option value="del" ${node.params.keyAction === 'del' ? 'selected' : ''}>Xóa Ký Tự (Backspace)</option>
+              <option value="volume_up" ${node.params.keyAction === 'volume_up' ? 'selected' : ''}>Tăng Âm Lượng</option>
+              <option value="volume_down" ${node.params.keyAction === 'volume_down' ? 'selected' : ''}>Giảm Âm Lượng</option>
+            </select>
+          </div>
+        `;
+      } else if (node.type === 'delay') {
+        paramFields = `
+          <div class="form-group">
+            <label class="form-label">Thời Gian Chờ Cố Định (ms)</label>
+            <input type="number" step="500" min="0" class="form-input param-field" data-prop="durationMs" value="${node.params.durationMs || 2000}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Hoặc Chờ Ngẫu Nhiên (Min - Max ms)</label>
+            <div class="row-2">
+              <input type="number" step="500" min="0" class="form-input param-field" data-prop="minDelayMs" placeholder="Min ms" value="${node.params.minDelayMs || ''}">
+              <input type="number" step="500" min="0" class="form-input param-field" data-prop="maxDelayMs" placeholder="Max ms" value="${node.params.maxDelayMs || ''}">
+            </div>
+          </div>
+        `;
+      } else if (node.type === 'launch_app' || node.type === 'stop_app') {
+        let presetOptions = `<option value="">-- Chọn Mẫu Nhanh --</option>`;
+        APP_PRESETS.forEach(p => {
+          presetOptions += `<option value="${p.pkg}">${p.name} (${p.pkg})</option>`;
+        });
+
+        paramFields = `
+          <div class="form-group">
+            <label class="form-label">Gợi Ý Ứng Dụng</label>
+            <select class="form-select" id="appPresetSelect">${presetOptions}</select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Package Name Ứng Dụng</label>
+            <input type="text" class="form-input param-field" data-prop="packageName" value="${escapeHtml(node.params.packageName || '')}">
+          </div>
+        `;
+      } else if (node.type === 'shell') {
+        paramFields = `
+          <div class="form-group">
+            <label class="form-label">Lệnh ADB Shell</label>
+            <textarea class="form-textarea param-field" data-prop="shellCmd">${escapeHtml(node.params.shellCmd || '')}</textarea>
+          </div>
+        `;
+      }
+
+      container.innerHTML = `
+        <div class="form-group">
+          <label class="form-label">Tên Bước (Label)</label>
+          <input type="text" class="form-input" id="nodeLabelField" value="${escapeHtml(node.label)}">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Mô Tả Thêm</label>
+          <input type="text" class="form-input" id="nodeDescField" value="${escapeHtml(node.description || '')}">
+        </div>
+
+        <div class="collapsible-header">Tham Số Hành Động</div>
+        ${paramFields}
+
+        <div style="margin-top: 12px;">
+          <button class="btn btn-danger" style="width:100%;" id="btnDeleteCurrentNode">
+            <svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            <span>Xóa Bước Này</span>
+          </button>
+        </div>
+      `;
+
+      // Node label/desc listeners
+      document.getElementById('nodeLabelField').addEventListener('input', (e) => {
+        node.label = e.target.value;
+        renderCanvas();
+      });
+      document.getElementById('nodeDescField').addEventListener('input', (e) => {
+        node.description = e.target.value;
+      });
+
+      // App preset selector helper
+      const presetSel = document.getElementById('appPresetSelect');
+      if (presetSel) {
+        presetSel.addEventListener('change', (e) => {
+          if (e.target.value) {
+            node.params.packageName = e.target.value;
+            const pkgInput = container.querySelector('[data-prop="packageName"]');
+            if (pkgInput) pkgInput.value = e.target.value;
+            renderCanvas();
+          }
+        });
+      }
+
+      // Generic param-field listeners
+      container.querySelectorAll('.param-field').forEach(field => {
+        field.addEventListener('input', (e) => {
+          const prop = e.target.dataset.prop;
+          let val = e.target.value;
+          if (e.target.type === 'number') {
+            val = val === '' ? 0 : parseFloat(val);
+          }
+          node.params[prop] = val;
+          renderCanvas();
+        });
+      });
+
+      container.querySelectorAll('.param-checkbox').forEach(cb => {
+        cb.addEventListener('change', (e) => {
+          const prop = e.target.dataset.prop;
+          node.params[prop] = e.target.checked;
+          renderCanvas();
+        });
+      });
+
+      document.getElementById('btnDeleteCurrentNode').addEventListener('click', () => {
+        const idx = state.workflow.nodes.findIndex(n => n.id === node.id);
+        if (idx !== -1) {
+          state.workflow.nodes.splice(idx, 1);
+          state.selectedNodeId = null;
+          renderCanvas();
+          renderInspector();
+        }
+      });
+    }
+
+    // 5. Header Toolbar Buttons
+    function setupToolbarEvents() {
+      const nameInput = document.getElementById('wfNameInput');
+      nameInput.addEventListener('input', (e) => {
+        state.workflow.name = e.target.value;
+        const inspectorNameField = document.getElementById('wfNameField');
+        if (inspectorNameField) inspectorNameField.value = e.target.value;
+      });
+
+      // Clear Workflow
+      document.getElementById('btnClearWorkflow').addEventListener('click', () => {
+        if (confirm('Bạn có chắc muốn xóa tất cả các bước trong kịch bản này?')) {
+          state.workflow.nodes = [];
+          state.selectedNodeId = null;
+          renderCanvas();
+          renderInspector();
+          appendLog('Đã làm mới kịch bản.');
+        }
+      });
+
+      // Run Workflow
+      document.getElementById('btnRun').addEventListener('click', async () => {
+        if (state.workflow.nodes.length === 0) {
+          alert('Vui lòng thêm ít nhất một bước thao tác vào kịch bản trước khi chạy!');
+          return;
+        }
+
+        try {
+          const res = await fetch('/api/workflow/run', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(state.workflow)
+          });
+          const data = await res.json();
+          if (data.code === 200) {
+            appendLog(`Khởi chạy kịch bản "${state.workflow.name}" thành công.`);
+            pollEngineStatus();
+          } else {
+            alert('Lỗi khởi chạy: ' + data.msg);
+          }
+        } catch (err) {
+          alert('Không thể kết nối tới server: ' + err.message);
+        }
+      });
+
+      // Stop Workflow
+      document.getElementById('btnStop').addEventListener('click', async () => {
+        try {
+          const res = await fetch('/api/workflow/stop', { method: 'POST' });
+          const data = await res.json();
+          if (data.code === 200) {
+            appendLog('Đã gửi tín hiệu dừng kịch bản.');
+            pollEngineStatus();
+          }
+        } catch (err) {
+          alert('Lỗi dừng workflow: ' + err.message);
+        }
+      });
+
+      // Export JSON
+      document.getElementById('btnExport').addEventListener('click', () => {
+        const jsonStr = JSON.stringify(state.workflow, null, 2);
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = (state.workflow.name.replace(/[^a-zA-Z0-9_À-ɏẠ-ỹ]/g, '_') || 'workflow') + '.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        appendLog('Đã xuất file kịch bản JSON.');
+      });
+
+      // Import JSON
+      const fileInput = document.getElementById('fileInput');
+      document.getElementById('btnImport').addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const imported = JSON.parse(event.target.result);
+            if (!imported.nodes || !Array.isArray(imported.nodes)) {
+              throw new Error('Định dạng JSON workflow không đúng cấu trúc (thiếu mảng nodes).');
+            }
+            state.workflow = imported;
+            state.selectedNodeId = null;
+            document.getElementById('wfNameInput').value = imported.name || 'Workflow Nhập Khẩu';
+            renderCanvas();
+            renderInspector();
+            appendLog(`Đã nạp thành công kịch bản "${imported.name}" (${imported.nodes.length} bước).`);
+          } catch (err) {
+            alert('Lỗi đọc file JSON: ' + err.message);
+          }
+        };
+        reader.readAsText(file);
+      });
+
+      // Template Modal
+      const modal = document.getElementById('templateModal');
+      document.getElementById('btnTemplates').addEventListener('click', async () => {
+        try {
+          const res = await fetch('/api/workflow/templates');
+          const data = await res.json();
+          if (data.code === 200 && data.data) {
+            renderTemplatesModal(data.data);
+            modal.classList.add('open');
+          }
+        } catch (err) {
+          alert('Không thể tải danh sách mẫu: ' + err.message);
+        }
+      });
+
+      document.getElementById('btnCloseModal').addEventListener('click', () => {
+        modal.classList.remove('open');
+      });
+
+      // Log Toggle
+      const logDrawer = document.getElementById('logDrawer');
+      document.getElementById('logToggle').addEventListener('click', (e) => {
+        if (e.target.closest('#btnClearLogs')) return;
+        logDrawer.classList.toggle('collapsed');
+      });
+
+      document.getElementById('btnClearLogs').addEventListener('click', () => {
+        document.getElementById('logContainer').innerHTML = '';
+      });
+    }
+
+    // 6. Template Modal Loader
+    function renderTemplatesModal(templates) {
+      const container = document.getElementById('templateList');
+      container.innerHTML = '';
+      templates.forEach(tpl => {
+        const card = document.createElement('div');
+        card.className = 'template-card';
+        card.innerHTML = `
+          <div class="template-title">${escapeHtml(tpl.name)} (${tpl.nodes.length} bước)</div>
+          <div class="template-desc">${escapeHtml(tpl.description || '')}</div>
+        `;
+        card.addEventListener('click', () => {
+          state.workflow = JSON.parse(JSON.stringify(tpl));
+          state.workflow.id = 'wf_' + Date.now();
+          state.selectedNodeId = null;
+          document.getElementById('wfNameInput').value = state.workflow.name;
+          document.getElementById('templateModal').classList.remove('open');
+          renderCanvas();
+          renderInspector();
+          appendLog(`Đã tải kịch bản mẫu: "${tpl.name}"`);
+        });
+        container.appendChild(card);
+      });
+    }
+
+    // 7. Polling Device List
+    async function fetchDevices() {
+      try {
+        const res = await fetch('/device/list');
+        const data = await res.json();
+        if (data.code === 200 && Array.isArray(data.data)) {
+          state.onlineDevices = data.data.filter(d => d.status === 'online' || d.usb_connect_status);
+        }
+      } catch (_) {}
+    }
+
+    // 8. Polling Engine Status
+    async function pollEngineStatus() {
+      try {
+        const res = await fetch('/api/workflow/status');
+        const data = await res.json();
+        if (data.code === 200 && data.data) {
+          const s = data.data;
+          state.isRunning = s.isRunning;
+          state.currentNodeId = s.currentNodeId;
+          state.currentStep = s.currentStep;
+          state.currentLoop = s.currentLoop;
+
+          const statusBadge = document.getElementById('statusBadge');
+          const statusText = document.getElementById('statusText');
+          const btnRun = document.getElementById('btnRun');
+          const btnStop = document.getElementById('btnStop');
+
+          if (s.isRunning) {
+            statusBadge.className = 'status-badge running';
+            statusText.innerText = `Đang chạy (Vòng ${s.currentLoop}/${s.totalLoops} • Bước ${s.currentStep}/${s.totalSteps})`;
+            btnRun.disabled = true;
+            btnStop.disabled = false;
+          } else {
+            statusBadge.className = 'status-badge';
+            statusText.innerText = s.errorMessage ? `Lỗi: ${s.errorMessage}` : 'Sẵn sàng';
+            btnRun.disabled = false;
+            btnStop.disabled = true;
+          }
+
+          // Fetch logs
+          fetchLogs();
+          // Update active step highlight
+          renderActiveStepCard();
+        }
+      } catch (_) {}
+    }
+
+    async function fetchLogs() {
+      try {
+        const res = await fetch('/api/workflow/logs');
+        const data = await res.json();
+        if (data.code === 200 && Array.isArray(data.data)) {
+          const logBox = document.getElementById('logContainer');
+          const currentCount = logBox.querySelectorAll('.log-line').length;
+          if (data.data.length > currentCount) {
+            logBox.innerHTML = '';
+            data.data.forEach(line => {
+              const el = document.createElement('div');
+              el.className = 'log-line';
+              if (line.includes('Error') || line.includes('error')) el.classList.add('error');
+              else if (line.includes('completed') || line.includes('Starting')) el.classList.add('success');
+              else if (line.includes('Warning')) el.classList.add('warn');
+              el.innerText = line;
+              logBox.appendChild(el);
+            });
+            logBox.scrollTop = logBox.scrollHeight;
+          }
+        }
+      } catch (_) {}
+    }
+
+    function renderActiveStepCard() {
+      document.querySelectorAll('.step-card').forEach((card, idx) => {
+        const node = state.workflow.nodes[idx];
+        if (node && state.isRunning && state.currentNodeId === node.id) {
+          card.classList.add('active-running');
+        } else {
+          card.classList.remove('active-running');
+        }
+      });
+    }
+
+    function appendLog(msg) {
+      const logBox = document.getElementById('logContainer');
+      const time = new Date().toTimeString().split(' ')[0];
+      const el = document.createElement('div');
+      el.className = 'log-line';
+      el.innerText = `[${time}] ${msg}`;
+      logBox.appendChild(el);
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>

@@ -1,21 +1,29 @@
 package api
 
 import (
+	"context"
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
+	"sync"
+	"time"
 
 	"github.com/gin-gonic/gin"
 
 	"hcbox/pkg/device"
 	"hcbox/pkg/models"
+	"hcbox/pkg/workflow"
 )
 
 // Server encapsulates the Gin REST API engine
 type Server struct {
 	router    *gin.Engine
 	deviceMgr *device.DeviceManager
+	wfEngine  *workflow.Engine
 	addr      string
+	logMu     sync.RWMutex
+	logs      []string
 }
 
 // NewServer creates and configures the REST API server on port 20080
@@ -45,7 +53,9 @@ func NewServer(deviceMgr *device.DeviceManager, addr string) *Server {
 	s := &Server{
 		router:    router,
 		deviceMgr: deviceMgr,
+		wfEngine:  workflow.NewEngine(deviceMgr),
 		addr:      addr,
+		logs:      make([]string, 0),
 	}
 	s.registerRoutes()
 	return s
@@ -73,7 +83,15 @@ func (s *Server) registerRoutes() {
 	s.router.GET("/device/list", s.handleDeviceList)
 	s.router.GET("/api/device/app-icon", s.handleAppIcon)
 
-	// 5. Static UI (Vue 3 / Element Plus SPA)
+	// 5. Workflow automation endpoints
+	s.router.GET("/api/workflow/templates", s.handleWorkflowTemplates)
+	s.router.GET("/api/workflow/status", s.handleWorkflowStatus)
+	s.router.POST("/api/workflow/run", s.handleWorkflowRun)
+	s.router.POST("/api/workflow/stop", s.handleWorkflowStop)
+	s.router.GET("/api/workflow/logs", s.handleWorkflowLogs)
+	s.router.GET("/workflow-builder", s.handleWorkflowBuilder)
+
+	// 6. Static UI (Vue 3 / Element Plus SPA)
 	uiCandidates := []string{
 		"D:/python/bypass_hcbox/extracted_source",
 		"extracted_source",
@@ -238,6 +256,19 @@ func (s *Server) handleMenusSimple(c *gin.Context) {
 			},
 		},
 		{
+			Name:      "WorkflowBuilder",
+			Path:      "/workflow",
+			Component: "/outside/Iframe",
+			Meta: models.MenuMeta{
+				Title:     "Tạo Workflow Auto",
+				Icon:      "lucide:workflow",
+				Roles:     []string{"R_SUPER", "R_ADMIN"},
+				KeepAlive: true,
+				IsIframe:  true,
+				Link:      "/workflow-builder",
+			},
+		},
+		{
 			Name:      "Device",
 			Path:      "/device",
 			Component: "/index/index",
@@ -299,6 +330,111 @@ func (s *Server) handleDeviceList(c *gin.Context) {
 func (s *Server) handleAppIcon(c *gin.Context) {
 	// Return a 1x1 transparent PNG or empty icon
 	c.Data(http.StatusOK, "image/png", []byte{})
+}
+
+func (s *Server) appendLog(msg string) {
+	s.logMu.Lock()
+	defer s.logMu.Unlock()
+	entry := fmt.Sprintf("[%s] %s", time.Now().Format("15:04:05"), msg)
+	s.logs = append(s.logs, entry)
+	if len(s.logs) > 500 {
+		s.logs = s.logs[len(s.logs)-500:]
+	}
+}
+
+func (s *Server) getLogs() []string {
+	s.logMu.RLock()
+	defer s.logMu.RUnlock()
+	res := make([]string, len(s.logs))
+	copy(res, s.logs)
+	return res
+}
+
+func (s *Server) handleWorkflowTemplates(c *gin.Context) {
+	templates := workflow.GetPredefinedTemplates()
+	c.JSON(http.StatusOK, models.ApiResponse{
+		Code: 200,
+		Msg:  "thành công",
+		Data: templates,
+	})
+}
+
+func (s *Server) handleWorkflowStatus(c *gin.Context) {
+	status := s.wfEngine.GetStatus()
+	c.JSON(http.StatusOK, models.ApiResponse{
+		Code: 200,
+		Msg:  "thành công",
+		Data: status,
+	})
+}
+
+func (s *Server) handleWorkflowRun(c *gin.Context) {
+	var wf workflow.Workflow
+	if err := c.ShouldBindJSON(&wf); err != nil {
+		c.JSON(http.StatusBadRequest, models.ApiResponse{
+			Code: 400,
+			Msg:  "Dữ liệu workflow không hợp lệ: " + err.Error(),
+		})
+		return
+	}
+
+	if len(wf.Nodes) == 0 {
+		c.JSON(http.StatusBadRequest, models.ApiResponse{
+			Code: 400,
+			Msg:  "Workflow phải chứa ít nhất 1 node chức năng",
+		})
+		return
+	}
+
+	// Run in background goroutine
+	go func() {
+		_ = s.wfEngine.Execute(context.Background(), &wf, s.appendLog)
+	}()
+
+	c.JSON(http.StatusOK, models.ApiResponse{
+		Code: 200,
+		Msg:  "Đã khởi chạy workflow thành công",
+		Data: gin.H{
+			"id":   wf.ID,
+			"name": wf.Name,
+		},
+	})
+}
+
+func (s *Server) handleWorkflowStop(c *gin.Context) {
+	s.wfEngine.Stop()
+	s.appendLog("Workflow đã được người dùng dừng thủ công")
+	c.JSON(http.StatusOK, models.ApiResponse{
+		Code: 200,
+		Msg:  "Đã dừng workflow",
+		Data: true,
+	})
+}
+
+func (s *Server) handleWorkflowLogs(c *gin.Context) {
+	c.JSON(http.StatusOK, models.ApiResponse{
+		Code: 200,
+		Msg:  "thành công",
+		Data: s.getLogs(),
+	})
+}
+
+func (s *Server) handleWorkflowBuilder(c *gin.Context) {
+	candidates := []string{
+		"D:/python/bypass_hcbox/extracted_source/workflow/index.html",
+		"extracted_source/workflow/index.html",
+	}
+	for _, cand := range candidates {
+		if _, err := os.Stat(cand); err == nil {
+			c.File(cand)
+			return
+		}
+	}
+	c.Data(http.StatusOK, "text/html; charset=utf-8", []byte(`<!DOCTYPE html>
+<html>
+<head><title>Workflow Builder</title></head>
+<body><h2>Workflow Builder UI Loading...</h2></body>
+</html>`))
 }
 
 // Router returns the underlying gin.Engine

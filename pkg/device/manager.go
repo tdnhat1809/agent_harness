@@ -376,3 +376,37 @@ func (m *DeviceManager) ScanDevices() ([]*models.Device, error) {
 	}
 	return m.GetAllDevices(), nil
 }
+
+// GetADB returns the underlying ADBBridge
+func (m *DeviceManager) GetADB() *ADBBridge {
+	return m.adb
+}
+
+// RunShell executes an ADB shell command on a specific device
+func (m *DeviceManager) RunShell(udid string, cmd string) (string, error) {
+	if m.adb == nil {
+		return "", fmt.Errorf("adb bridge not available")
+	}
+	return m.adb.Shell(udid, cmd)
+}
+
+// LaunchApp starts an application on the device by its package name
+func (m *DeviceManager) LaunchApp(udid string, packageName string) error {
+	if m.adb == nil {
+		return fmt.Errorf("adb bridge not available")
+	}
+	cmd := fmt.Sprintf("monkey -p %s -c android.intent.category.LAUNCHER 1", packageName)
+	_, err := m.adb.Shell(udid, cmd)
+	return err
+}
+
+// StopApp forces an application to close on the device
+func (m *DeviceManager) StopApp(udid string, packageName string) error {
+	if m.adb == nil {
+		return fmt.Errorf("adb bridge not available")
+	}
+	cmd := fmt.Sprintf("am force-stop %s", packageName)
+	_, err := m.adb.Shell(udid, cmd)
+	return err
+}
+

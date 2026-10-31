@@ -70,6 +70,8 @@ type MenuMeta struct {
 	Roles     []string `json:"roles"`
 	KeepAlive bool     `json:"keepAlive"`
 	FixedTab  bool     `json:"fixedTab,omitempty"`
+	IsIframe  bool     `json:"isIframe,omitempty"`
+	Link      string   `json:"link,omitempty"`
 }
 
 // WsInMessage represents incoming WebSocket payloads from the frontend

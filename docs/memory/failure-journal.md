@@ -10,6 +10,7 @@
 
 | ID | Ngày | Triệu chứng lỗi (Symptoms) | Nguyên nhân gốc rễ (Root Cause) | Quy tắc phòng ngừa bất biến (Never Do Again) |
 |---|---|---|---|---|
+| `ERR-010` | 2026-11-01 | Frontend dashboard can not embed custom workflow builder without native Vue route component | Art Design Pro router requires isIframe: true and meta.link in menu config to delegate rendering to handleIframeRoute and componentLoader.loadIframe() | Always declare isIframe: true with absolute or relative iframe link for new custom SPA extensions |
 | `ERR-009` | 2026-10-31 | Lower half of mirrored phone screen was blurry and smeared with a white translucent overlay | TCP stream chunking severed H.264 NALUs across packet boundaries. The WebCodecs player splitNALUs failed to assemble fragmented slices, feeding partial IDR/P-frame macroblocks into hardware decoder which rendered corrupted lower slices as white smears | Use Annex-B NALUSplitter on backend to buffer TCP stream and emit only complete NAL units per WebSocket binary message, and increase bitrate to 8Mbps |
 | `ERR-008` | 2026-10-31 | Phone screen turned black after switching windows or backgrounding | WebCodecs player set videoElement opacity to 0 and relied on requestVideoFrameCallback which stalls when window is not actively rendering to display | Set videoElement default opacity to 1 and trigger first frame render callback synchronously upon decoding |
 | `ERR-007` | 2026-10-31 | Mouse clicks and touch/swipe gestures on screen mirrored device did not control the phone | scrcpy-server was launched with max_size=1080 which downscaled video size to 528x1080, but touch injection sent the native 1080x2220 size, causing scrcpy to reject all touch packets with 'Ignore touch event, it was generated for a different device size' | Launch scrcpy-server with native resolution (max_size=0) matching device screen resolution, and support swipe gestures in control hub |
@@ -97,4 +98,12 @@ hoặc trên Linux/macOS:
 - **Root Cause**: TCP stream chunking severed H.264 NALUs across packet boundaries. The WebCodecs player splitNALUs failed to assemble fragmented slices, feeding partial IDR/P-frame macroblocks into hardware decoder which rendered corrupted lower slices as white smears
 - **Prevention Rule**: Use Annex-B NALUSplitter on backend to buffer TCP stream and emit only complete NAL units per WebSocket binary message, and increase bitrate to 8Mbps
 - **Details**: Fixed in pkg/stream/server.go and pkg/device/manager.go, verified with live screen capture at 23:03
+
+
+
+### `ERR-010`: Frontend dashboard can not embed custom workflow builder without native Vue route component
+- **Date**: 2026-11-01
+- **Symptom**: Frontend dashboard can not embed custom workflow builder without native Vue route component
+- **Root Cause**: Art Design Pro router requires isIframe: true and meta.link in menu config to delegate rendering to handleIframeRoute and componentLoader.loadIframe()
+- **Prevention Rule**: Always declare isIframe: true with absolute or relative iframe link for new custom SPA extensions
 
