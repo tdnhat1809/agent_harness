@@ -41,9 +41,10 @@ $codeId = '`' + $nextId + '`'
 $newRow = "| $codeId | $dateStr | $Symptom | $RootCause | $Prevention |`n"
 
 # Insert row into the table (right after table header)
-$tableMarker = "|---|---|---|---|---|`n"
-if ($content.Contains($tableMarker)) {
-    $idx = $content.IndexOf($tableMarker) + $tableMarker.Length
+$pattern = "\|---\|---\|---\|---\|---\|\r?\n"
+$match = [regex]::Match($content, $pattern)
+if ($match.Success) {
+    $idx = $match.Index + $match.Length
     $content = $content.Substring(0, $idx) + $newRow + $content.Substring($idx)
 } else {
     $content += "`n" + $newRow

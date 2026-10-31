@@ -1,0 +1,275 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Art Design Pro</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Art Design Pro - A modern admin dashboard template built with Vue 3, TypeScript, and Element Plus."
+    />
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon-Ce5kOj9t.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media = 'all'"
+    />
+
+    <style>
+      /* 防止页面刷新时白屏的初始样式 */
+      html {
+        background-color: #fafbfc;
+      }
+
+      html.dark {
+        background-color: #070707;
+      }
+
+      #startup-loading {
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        color: var(--el-color-primary, var(--startup-primary, #5d87ff));
+        font-family: Arial, sans-serif;
+      }
+
+      html.dark #startup-loading {
+        background: #070707;
+      }
+      #startup-loading svg {
+        width: 64px;
+        height: 64px;
+      }
+      #startup-loading rect {
+        transform-box: fill-box;
+        transform-origin: center;
+        animation: startup-html-wave 1.2s linear infinite;
+      }
+      #startup-loading p {
+        margin: 18px 0 0;
+        font-size: 18px;
+        line-height: 1.5;
+        letter-spacing: 0.08em;
+        color: var(--el-text-color-secondary, #909399);
+      }
+      @supports (background-clip: text) or (-webkit-background-clip: text) {
+        #startup-loading p {
+          color: transparent;
+          background-image: linear-gradient(
+            100deg,
+            #909399 40%,
+            var(--startup-primary, #5d87ff) 48%,
+            #fff 50%,
+            var(--startup-primary, #5d87ff) 52%,
+            #909399 60%
+          );
+          background-size: 300% 100%;
+          background-position: 100% center;
+          background-clip: text;
+          -webkit-background-clip: text;
+          animation: startup-html-shimmer 2.2s ease-in-out infinite;
+        }
+      }
+      @keyframes startup-html-wave {
+        0%,
+        50%,
+        100% {
+          transform: scale(1);
+        }
+        25% {
+          transform: scale(0.181446);
+        }
+      }
+      @keyframes startup-html-shimmer {
+        0% {
+          background-position: 100% center;
+        }
+        75%,
+        100% {
+          background-position: 0% center;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #startup-loading rect {
+          animation: none;
+        }
+        #startup-loading p {
+          animation: none;
+          background: none;
+          color: #909399;
+        }
+      }
+    </style>
+
+    <script>
+      // 初始化 html class 主题属性
+      ;(function () {
+        try {
+          if (typeof Storage === 'undefined' || !window.localStorage) {
+            return
+          }
+
+          const themeType = localStorage.getItem('sys-theme')
+          if (themeType === 'dark') {
+            document.documentElement.classList.add('dark')
+          }
+        } catch (e) {
+          console.warn('Failed to apply initial theme:', e)
+        }
+      })()
+    </script>
+    <script>
+      try {
+        if (!localStorage.getItem('sys-version')) {
+          localStorage.setItem('sys-version', '3.0.2');
+        }
+        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjQ5MDI0MTk2ODIsImlhdCI6MTc2MTgxOTY4MiwidXNlcklkIjoxLCJ1c2VyTmFtZSI6ImIydzEyMzQifQ.H64pE8911WcKwSqjITs58wACKqRGjEVQ';
+        const userSession = {
+          language: "vi",
+          isLogin: true,
+          isLock: false,
+          lockPassword: "",
+          info: { email: "minhnhat18092007113@gmail.com", roles: ["R_ADMIN", "R_SUPER"], userId: 1, userName: "b2w1234" },
+          searchHistory: [],
+          accessToken: token,
+          refreshToken: token,
+          authStatus: "authorized",
+          expiryDate: "2099-12-31",
+          currentPlan: "pro",
+          maxConnections: 100,
+          canConnect: true,
+          wsapiEnabled: true,
+          canUseWsApi: true,
+          membershipStatus: "active"
+        };
+        const settingSession = {
+          menuType: "left",
+          menuOpenWidth: 230,
+          systemThemeType: "light",
+          systemThemeMode: "light",
+          menuThemeType: "design",
+          systemThemeColor: "#5D87FF",
+          boxBorderMode: true,
+          uniqueOpened: true,
+          showMenuButton: true,
+          showFastEnter: true,
+          showRefreshButton: true,
+          showCrumbs: true,
+          autoClose: false,
+          showWorkTab: true
+        };
+        localStorage.setItem('sys-v3.0.2-user', JSON.stringify(userSession));
+        localStorage.setItem('user', JSON.stringify(userSession));
+        if (!localStorage.getItem('sys-v3.0.2-setting')) {
+          localStorage.setItem('sys-v3.0.2-setting', JSON.stringify(settingSession));
+        }
+      } catch(e) { console.error('LocalStorage pre-seed error:', e); }
+
+      
+      // Intercept Wails desktop RPC in standard web browsers
+      // Prevent Vite preloadError from breaking routes on missing CSS chunks
+      window.addEventListener('vite:preloadError', (e) => {
+        e.preventDefault();
+        console.warn('Ignored Vite preload error:', e.payload);
+      });
+      window._wails = window._wails || {};
+      window._wails.environment = { OS: "windows", Arch: "amd64" };
+      window._wails.setResizable = function() {};
+      const _origFetch = window.fetch;
+      window.fetch = function(url, opts) {
+        if (typeof url === 'string' && url.includes('/wails/')) {
+          return Promise.reject(new Error('Wails bridge not attached'));
+        }
+        return _origFetch.apply(this, arguments);
+      };
+
+      if (!window.location.hash || window.location.hash === '#/' || window.location.hash === '#') {
+        window.location.hash = '#/console';
+      }
+    </script>
+    <script type="module" crossorigin src="/assets/index-DvmeQwzY.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BUKU4QVl.css">
+  </head>
+
+  <body>
+    <script>
+      ;(function () {
+        const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+        document.documentElement.dataset.documentInstance = id
+        console.info('[document] instance', id, 'navigation', performance.getEntriesByType('navigation')[0]?.type || 'unknown')
+        window.addEventListener('pagehide', (event) => {
+          console.info('[document] pagehide', id, 'persisted', event.persisted)
+        })
+      })()
+    </script>
+    <div id="startup-loading" role="status" aria-live="polite">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+        <rect x="1" y="1" width="7.33" height="7.33" />
+        <rect x="8.33" y="1" width="7.33" height="7.33" style="animation-delay: 0.1s" />
+        <rect x="15.66" y="1" width="7.33" height="7.33" style="animation-delay: 0.2s" />
+        <rect x="1" y="8.33" width="7.33" height="7.33" style="animation-delay: 0.1s" />
+        <rect x="8.33" y="8.33" width="7.33" height="7.33" style="animation-delay: 0.2s" />
+        <rect x="15.66" y="8.33" width="7.33" height="7.33" style="animation-delay: 0.3s" />
+        <rect x="1" y="15.66" width="7.33" height="7.33" style="animation-delay: 0.2s" />
+        <rect x="8.33" y="15.66" width="7.33" height="7.33" style="animation-delay: 0.3s" />
+        <rect x="15.66" y="15.66" width="7.33" height="7.33" style="animation-delay: 0.4s" />
+      </svg>
+      <p id="startup-loading-text">loading…</p>
+    </div>
+    <script>
+      // 不依赖 Vue 或后端，首次绘制前恢复可用的语言和主题设置。
+      ;(function () {
+        const translations = {
+          zh: 'loading…',
+          'zh-tw': 'loading…',
+          en: 'loading…',
+          ja: 'loading…',
+          ko: 'loading…',
+          vi: 'loading…'
+        }
+        let language = navigator.language.toLowerCase()
+        language = /^zh-(tw|hk|mo|hant)/.test(language) ? 'zh-tw' : language.split('-')[0]
+        try {
+          const keys = Object.keys(localStorage)
+          const version = localStorage.getItem('sys-version')
+          const readStore = (name) => {
+            const current = `sys-v${version}-${name}`
+            const key =
+              localStorage.getItem(current) !== null
+                ? current
+                : keys.find((key) => new RegExp(`^sys-v[^-]+-${name}$`).test(key))
+            return JSON.parse(
+              (key && localStorage.getItem(key)) || localStorage.getItem(name) || '{}'
+            )
+          }
+          const user = readStore('user')
+          if (translations[user.language]) language = user.language
+          const setting = readStore('setting')
+          if (
+            typeof setting.systemThemeColor === 'string' &&
+            CSS.supports('color', setting.systemThemeColor)
+          ) {
+            document.documentElement.style.setProperty(
+              '--startup-primary',
+              setting.systemThemeColor
+            )
+          }
+        } catch (error) {
+          console.warn('Failed to restore startup preferences:', error)
+        }
+        document.getElementById('startup-loading-text').textContent =
+          translations[language] || translations.zh
+      })()
+    </script>
+    <div id="app"></div>
+
+  </body>
+</html>
